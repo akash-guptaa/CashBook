@@ -1,0 +1,6805 @@
+// Combined Personal Finance Management Tool Bundle
+
+const {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback
+} = React;
+
+// ===== FILE: src/initialData.js =====
+// Default Initial Data for Personal Finance Management Tool
+// Multi-User Architecture with Salaried User Profiles and Admin Roles
+
+window.INITIAL_DATA = {
+  // Pre-configured Users
+  users: [{
+    id: "usr-admin",
+    name: "System Administrator",
+    email: "admin@cashbook.com",
+    password: "Passwd@123",
+    role: "admin",
+    status: "active",
+    // 'active' | 'inactive'
+    monthlySalary: 120000,
+    roleTitle: "Lead IT Administrator",
+    company: "CashBook Global Ltd",
+    payDay: 1,
+    currency: "₹",
+    currencyCode: "INR",
+    savingsGoalPercentage: 40
+  }, {
+    id: "usr-rahul",
+    name: "Rahul Sharma",
+    email: "rahul@cashbook.com",
+    password: "Passwd@123",
+    role: "user",
+    status: "active",
+    monthlySalary: 95000,
+    roleTitle: "Senior Software Engineer",
+    company: "Tata Consultancy Services Ltd",
+    payDay: 1,
+    currency: "₹",
+    currencyCode: "INR",
+    savingsGoalPercentage: 35
+  }, {
+    id: "usr-priya",
+    name: "Kiran",
+    email: "akash@cashbook.com",
+    password: "Passwd@123",
+    role: "user",
+    status: "active",
+    monthlySalary: 82000,
+    roleTitle: "Product Marketing Manager",
+    company: "Infosys Digital Media",
+    payDay: 5,
+    currency: "₹",
+    currencyCode: "INR",
+    savingsGoalPercentage: 30
+  }],
+  incomeCategories: [{
+    id: "inc-1",
+    name: "Monthly Salary",
+    icon: "wallet",
+    color: "#059669",
+    group: "Salary & Career"
+  }, {
+    id: "inc-2",
+    name: "Bonus",
+    icon: "gift",
+    color: "#8B5CF6",
+    group: "Salary & Career"
+  }, {
+    id: "inc-3",
+    name: "Incentives",
+    icon: "award",
+    color: "#3B82F6",
+    group: "Salary & Career"
+  }, {
+    id: "inc-4",
+    name: "Freelancing",
+    icon: "laptop",
+    color: "#06B6D4",
+    group: "Secondary Income"
+  }, {
+    id: "inc-5",
+    name: "Business Income",
+    icon: "briefcase",
+    color: "#F59E0B",
+    group: "Secondary Income"
+  }, {
+    id: "inc-6",
+    name: "Interest Income",
+    icon: "percent",
+    color: "#10B981",
+    group: "Investments"
+  }, {
+    id: "inc-7",
+    name: "Rental Income",
+    icon: "home",
+    color: "#F97316",
+    group: "Investments"
+  }, {
+    id: "inc-8",
+    name: "Investment Returns",
+    icon: "trending-up",
+    color: "#14B8A6",
+    group: "Investments"
+  }, {
+    id: "inc-9",
+    name: "Gifts Received",
+    icon: "heart",
+    color: "#EC4899",
+    group: "Personal"
+  }, {
+    id: "inc-10",
+    name: "Other Income",
+    icon: "plus-circle",
+    color: "#64748B",
+    group: "Other"
+  }],
+  expenseCategories: [
+  // Home & Living
+  {
+    id: "exp-1",
+    name: "Home EMI",
+    icon: "home",
+    color: "#DC2626",
+    group: "Home & Living"
+  }, {
+    id: "exp-2",
+    name: "Rent",
+    icon: "key",
+    color: "#B91C1C",
+    group: "Home & Living"
+  }, {
+    id: "exp-3",
+    name: "Maintenance",
+    icon: "tool",
+    color: "#D97706",
+    group: "Home & Living"
+  }, {
+    id: "exp-4",
+    name: "Electricity",
+    icon: "zap",
+    color: "#EAB308",
+    group: "Home & Living"
+  }, {
+    id: "exp-5",
+    name: "Water Bill",
+    icon: "droplet",
+    color: "#2563EB",
+    group: "Home & Living"
+  }, {
+    id: "exp-6",
+    name: "Gas",
+    icon: "flame",
+    color: "#EA580C",
+    group: "Home & Living"
+  }, {
+    id: "exp-7",
+    name: "Groceries",
+    icon: "shopping-cart",
+    color: "#16A34A",
+    group: "Home & Living"
+  },
+  // Personal
+  {
+    id: "exp-8",
+    name: "Shopping",
+    icon: "shopping-bag",
+    color: "#7C3AED",
+    group: "Personal"
+  }, {
+    id: "exp-9",
+    name: "Clothing",
+    icon: "shirt",
+    color: "#9333EA",
+    group: "Personal"
+  }, {
+    id: "exp-10",
+    name: "Mobile Recharge",
+    icon: "smartphone",
+    color: "#0284C7",
+    group: "Personal"
+  }, {
+    id: "exp-11",
+    name: "Internet",
+    icon: "wifi",
+    color: "#0891B2",
+    group: "Personal"
+  }, {
+    id: "exp-12",
+    name: "Personal Care",
+    icon: "sparkles",
+    color: "#DB2777",
+    group: "Personal"
+  }, {
+    id: "exp-13",
+    name: "Medical",
+    icon: "activity",
+    color: "#059669",
+    group: "Personal"
+  }, {
+    id: "exp-14",
+    name: "Entertainment",
+    icon: "film",
+    color: "#C026D3",
+    group: "Personal"
+  },
+  // Transportation
+  {
+    id: "exp-15",
+    name: "Petrol",
+    icon: "fuel",
+    color: "#EF4444",
+    group: "Transportation"
+  }, {
+    id: "exp-16",
+    name: "Public Transport",
+    icon: "bus",
+    color: "#3B82F6",
+    group: "Transportation"
+  }, {
+    id: "exp-17",
+    name: "Vehicle Maintenance",
+    icon: "tool",
+    color: "#475569",
+    group: "Transportation"
+  }, {
+    id: "exp-18",
+    name: "Cab",
+    icon: "car",
+    color: "#F59E0B",
+    group: "Transportation"
+  },
+  // Financial
+  {
+    id: "exp-19",
+    name: "Loan EMI",
+    icon: "credit-card",
+    color: "#BE123C",
+    group: "Financial"
+  }, {
+    id: "exp-20",
+    name: "Credit Card Payment",
+    icon: "credit-card",
+    color: "#4338CA",
+    group: "Financial"
+  }, {
+    id: "exp-21",
+    name: "Insurance",
+    icon: "shield",
+    color: "#0F766E",
+    group: "Financial"
+  }, {
+    id: "exp-22",
+    name: "Investments",
+    icon: "trending-up",
+    color: "#047857",
+    group: "Financial"
+  }, {
+    id: "exp-23",
+    name: "Savings",
+    icon: "piggy-bank",
+    color: "#0284C7",
+    group: "Financial"
+  }, {
+    id: "exp-24",
+    name: "Bank Charges",
+    icon: "file-text",
+    color: "#64748B",
+    group: "Financial"
+  },
+  // Family & Lifestyle
+  {
+    id: "exp-25",
+    name: "Family Expenses",
+    icon: "users",
+    color: "#6D28D9",
+    group: "Family & Lifestyle"
+  }, {
+    id: "exp-26",
+    name: "Wife / Personal",
+    icon: "heart",
+    color: "#E11D48",
+    group: "Family & Lifestyle"
+  }, {
+    id: "exp-27",
+    name: "Dining",
+    icon: "utensils",
+    color: "#D97706",
+    group: "Family & Lifestyle"
+  }, {
+    id: "exp-28",
+    name: "Travel",
+    icon: "compass",
+    color: "#0284C7",
+    group: "Family & Lifestyle"
+  }, {
+    id: "exp-29",
+    name: "Gifts",
+    icon: "gift",
+    color: "#F43F5E",
+    group: "Family & Lifestyle"
+  }, {
+    id: "exp-30",
+    name: "Other Expenses",
+    icon: "more-horizontal",
+    color: "#64748B",
+    group: "Family & Lifestyle"
+  }],
+  // Balance sheets keyed by User ID
+  balanceSheets: {
+    "usr-rahul": {
+      assets: {
+        cashInHand: 12500,
+        bankBalance: 145000,
+        savings: 220000,
+        investments: 680000,
+        otherAssets: 210000
+      },
+      liabilities: {
+        homeLoan: 1450000,
+        personalLoan: 0,
+        creditCard: 18400,
+        otherLiabilities: 0
+      },
+      lastUpdated: "2026-11-01"
+    },
+    "usr-priya": {
+      assets: {
+        cashInHand: 8000,
+        bankBalance: 110000,
+        savings: 180000,
+        investments: 420000,
+        otherAssets: 150000
+      },
+      liabilities: {
+        homeLoan: 0,
+        personalLoan: 45000,
+        creditCard: 12500,
+        otherLiabilities: 0
+      },
+      lastUpdated: "2026-11-01"
+    },
+    "usr-admin": {
+      assets: {
+        cashInHand: 25000,
+        bankBalance: 320000,
+        savings: 450000,
+        investments: 1200000,
+        otherAssets: 500000
+      },
+      liabilities: {
+        homeLoan: 800000,
+        personalLoan: 0,
+        creditCard: 22000,
+        otherLiabilities: 0
+      },
+      lastUpdated: "2026-11-01"
+    }
+  },
+  sampleAttachments: [{
+    id: "att-1",
+    name: "Grocery_Supermarket_Bill.jpg",
+    type: "photo",
+    size: "420 KB"
+  }, {
+    id: "att-2",
+    name: "HPCL_Petrol_Fuel_Receipt.png",
+    type: "photo",
+    size: "310 KB"
+  }, {
+    id: "att-3",
+    name: "TCS_Payslip_Salary_Nov2026.pdf",
+    type: "pdf",
+    size: "1.2 MB"
+  }, {
+    id: "att-4",
+    name: "Adani_Electricity_Bill.pdf",
+    type: "pdf",
+    size: "850 KB"
+  }],
+  // Realistic Transactions tagged with userId
+  transactions: [
+  // --- Rahul Sharma's Transactions (November 2026) ---
+  {
+    id: "tx-nov-01",
+    userId: "usr-rahul",
+    type: "IN",
+    categoryId: "inc-1",
+    categoryName: "Monthly Salary",
+    amount: 95000,
+    date: "2026-11-01",
+    time: "09:30 AM",
+    comment: "Salary credited for October 2026 - TCS Ltd",
+    attachments: [{
+      name: "TCS_Payslip_Salary_Nov2026.pdf",
+      type: "pdf",
+      size: "1.2 MB"
+    }]
+  }, {
+    id: "tx-nov-02",
+    userId: "usr-rahul",
+    type: "OUT",
+    categoryId: "exp-2",
+    categoryName: "Rent",
+    amount: 22000,
+    date: "2026-11-01",
+    time: "11:15 AM",
+    comment: "Monthly 2BHK flat rent transfer to landlord via UPI",
+    attachments: []
+  }, {
+    id: "tx-nov-03",
+    userId: "usr-rahul",
+    type: "OUT",
+    categoryId: "exp-22",
+    categoryName: "Investments",
+    amount: 15000,
+    date: "2026-11-02",
+    time: "10:00 AM",
+    comment: "Monthly SIP Auto-Debit (Nifty 50 Index Fund & Parag Parikh Flexi Cap)",
+    attachments: []
+  }, {
+    id: "tx-nov-04",
+    userId: "usr-rahul",
+    type: "OUT",
+    categoryId: "exp-23",
+    categoryName: "Savings",
+    amount: 10000,
+    date: "2026-11-02",
+    time: "10:30 AM",
+    comment: "Emergency Fund Recurring Deposit transfer",
+    attachments: []
+  }, {
+    id: "tx-nov-05",
+    userId: "usr-rahul",
+    type: "OUT",
+    categoryId: "exp-7",
+    categoryName: "Groceries",
+    amount: 4850,
+    date: "2026-11-03",
+    time: "06:45 PM",
+    comment: "D-Mart monthly grocery run (rice, atta, pulses, oil)",
+    attachments: [{
+      name: "Grocery_Supermarket_Bill.jpg",
+      type: "photo",
+      size: "420 KB"
+    }]
+  }, {
+    id: "tx-nov-06",
+    userId: "usr-rahul",
+    type: "OUT",
+    categoryId: "exp-4",
+    categoryName: "Electricity",
+    amount: 2140,
+    date: "2026-11-03",
+    time: "08:20 PM",
+    comment: "Electricity bill paid via GPay",
+    attachments: [{
+      name: "Adani_Electricity_Bill.pdf",
+      type: "pdf",
+      size: "850 KB"
+    }]
+  }, {
+    id: "tx-nov-07",
+    userId: "usr-rahul",
+    type: "OUT",
+    categoryId: "exp-15",
+    categoryName: "Petrol",
+    amount: 2500,
+    date: "2026-11-04",
+    time: "08:15 AM",
+    comment: "Full tank fuel HPCL auto fuel station",
+    attachments: [{
+      name: "HPCL_Petrol_Fuel_Receipt.png",
+      type: "photo",
+      size: "310 KB"
+    }]
+  }, {
+    id: "tx-nov-08",
+    userId: "usr-rahul",
+    type: "OUT",
+    categoryId: "exp-11",
+    categoryName: "Internet",
+    amount: 1179,
+    date: "2026-11-04",
+    time: "04:30 PM",
+    comment: "Jio Fiber broadband monthly 100 Mbps postpaid plan",
+    attachments: []
+  }, {
+    id: "tx-nov-09",
+    userId: "usr-rahul",
+    type: "OUT",
+    categoryId: "exp-10",
+    categoryName: "Mobile Recharge",
+    amount: 719,
+    date: "2026-11-05",
+    time: "12:10 PM",
+    comment: "Airtel 84-day prepaid recharge (2GB/day)",
+    attachments: []
+  }, {
+    id: "tx-nov-10",
+    userId: "usr-rahul",
+    type: "OUT",
+    categoryId: "exp-27",
+    categoryName: "Dining",
+    amount: 1850,
+    date: "2026-11-05",
+    time: "09:30 PM",
+    comment: "Family dinner at Barbeque Nation",
+    attachments: []
+  }, {
+    id: "tx-nov-11",
+    userId: "usr-rahul",
+    type: "IN",
+    categoryId: "inc-4",
+    categoryName: "Freelancing",
+    amount: 18500,
+    date: "2026-11-06",
+    time: "02:15 PM",
+    comment: "UI/UX component library consulting milestone payment",
+    attachments: []
+  }, {
+    id: "tx-nov-12",
+    userId: "usr-rahul",
+    type: "OUT",
+    categoryId: "exp-26",
+    categoryName: "Wife / Personal",
+    amount: 5000,
+    date: "2026-11-06",
+    time: "05:00 PM",
+    comment: "Monthly household discretionary allowance",
+    attachments: []
+  }, {
+    id: "tx-nov-13",
+    userId: "usr-rahul",
+    type: "OUT",
+    categoryId: "exp-7",
+    categoryName: "Groceries",
+    amount: 100,
+    date: "2026-11-07",
+    time: "08:46 AM",
+    comment: "Vegetables & coriander from local vendor stall",
+    attachments: []
+  }, {
+    id: "tx-nov-14",
+    userId: "usr-rahul",
+    type: "OUT",
+    categoryId: "exp-18",
+    categoryName: "Cab",
+    amount: 340,
+    date: "2026-11-07",
+    time: "01:20 PM",
+    comment: "Uber ride from client office to metro station",
+    attachments: []
+  },
+  // --- Kiran's Transactions (November 2026) ---
+  {
+    id: "tx-priya-01",
+    userId: "usr-priya",
+    type: "IN",
+    categoryId: "inc-1",
+    categoryName: "Monthly Salary",
+    amount: 82000,
+    date: "2026-11-05",
+    time: "10:00 AM",
+    comment: "Salary credited - Infosys Digital Media",
+    attachments: []
+  }, {
+    id: "tx-priya-02",
+    userId: "usr-priya",
+    type: "OUT",
+    categoryId: "exp-2",
+    categoryName: "Rent",
+    amount: 18000,
+    date: "2026-11-05",
+    time: "12:30 PM",
+    comment: "Flat rent share payment",
+    attachments: []
+  }, {
+    id: "tx-priya-03",
+    userId: "usr-priya",
+    type: "OUT",
+    categoryId: "exp-7",
+    categoryName: "Groceries",
+    amount: 3600,
+    date: "2026-11-06",
+    time: "07:15 PM",
+    comment: "Organic food market fruits and groceries",
+    attachments: []
+  }, {
+    id: "tx-priya-04",
+    userId: "usr-priya",
+    type: "OUT",
+    categoryId: "exp-8",
+    categoryName: "Shopping",
+    amount: 4200,
+    date: "2026-11-07",
+    time: "04:00 PM",
+    comment: "Winter wardrobe essentials from Zara",
+    attachments: []
+  },
+  // --- Admin Transactions ---
+  {
+    id: "tx-admin-01",
+    userId: "usr-admin",
+    type: "IN",
+    categoryId: "inc-1",
+    categoryName: "Monthly Salary",
+    amount: 120000,
+    date: "2026-11-01",
+    time: "09:00 AM",
+    comment: "Director salary credit",
+    attachments: []
+  }, {
+    id: "tx-admin-02",
+    userId: "usr-admin",
+    type: "OUT",
+    categoryId: "exp-22",
+    categoryName: "Investments",
+    amount: 35000,
+    date: "2026-11-02",
+    time: "11:00 AM",
+    comment: "Portfolio SIP auto-investment",
+    attachments: []
+  }]
+};
+
+// ===== FILE: src/icons.js =====
+// Self-contained SVG Icon Library for Personal Finance Tool
+// Styled with standard SVG paths matching Lucide icons
+
+window.Icons = {
+  ArrowLeft: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 24,
+    height: props.size || 24,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2.5",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "m12 19-7-7 7-7"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M19 12H5"
+  })),
+  Calendar: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M8 2v4"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M16 2v4"
+  }), /*#__PURE__*/React.createElement("rect", {
+    width: "18",
+    height: "18",
+    x: "3",
+    y: "4",
+    rx: "2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M3 10h18"
+  })),
+  Paperclip: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"
+  })),
+  Camera: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "13",
+    r: "3"
+  })),
+  FileText: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M14 2v4a2 2 0 0 0 2 2h4"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M10 9H8"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M16 13H8"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M16 17H8"
+  })),
+  Backspace: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 22,
+    height: props.size || 22,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "18",
+    y1: "9",
+    x2: "12",
+    y2: "15"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "12",
+    y1: "9",
+    x2: "18",
+    y2: "15"
+  })),
+  Plus: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2.5",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M5 12h14"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M12 5v14"
+  })),
+  Minus: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2.5",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M5 12h14"
+  })),
+  X: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M18 6 6 18"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "m6 6 12 12"
+  })),
+  Check: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2.5",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M20 6 9 17l-5-5"
+  })),
+  Search: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "11",
+    cy: "11",
+    r: "8"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "m21 21-4.3-4.3"
+  })),
+  Trash2: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 18,
+    height: props.size || 18,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M3 6h18"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "10",
+    y1: "11",
+    x2: "10",
+    y2: "17"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "14",
+    y1: "11",
+    x2: "14",
+    y2: "17"
+  })),
+  Edit2: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 18,
+    height: props.size || 18,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "m15 5 4 4"
+  })),
+  ChevronDown: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 18,
+    height: props.size || 18,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "m6 9 6 6 6-6"
+  })),
+  ChevronRight: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 18,
+    height: props.size || 18,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "m9 18 6-6-6-6"
+  })),
+  LayoutDashboard: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("rect", {
+    width: "7",
+    height: "9",
+    x: "3",
+    y: "3",
+    rx: "1"
+  }), /*#__PURE__*/React.createElement("rect", {
+    width: "7",
+    height: "5",
+    x: "14",
+    y: "3",
+    rx: "1"
+  }), /*#__PURE__*/React.createElement("rect", {
+    width: "7",
+    height: "9",
+    x: "14",
+    y: "12",
+    rx: "1"
+  }), /*#__PURE__*/React.createElement("rect", {
+    width: "7",
+    height: "5",
+    x: "3",
+    y: "16",
+    rx: "1"
+  })),
+  BookOpen: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"
+  })),
+  BarChart3: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M3 3v18h18"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M18 17V9"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M13 17V5"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M8 17v-3"
+  })),
+  Tags: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "m15 5 4 4"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M13 2H6a2 2 0 0 0-2 2v7l9 9 7-7-7-9z"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "7.5",
+    cy: "7.5",
+    r: ".5",
+    fill: "currentColor"
+  })),
+  Settings: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "12",
+    r: "3"
+  })),
+  Wallet: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"
+  })),
+  TrendingUp: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("polyline", {
+    points: "22 7 13.5 15.5 8.5 10.5 2 17"
+  }), /*#__PURE__*/React.createElement("polyline", {
+    points: "16 7 22 7 22 13"
+  })),
+  TrendingDown: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("polyline", {
+    points: "22 17 13.5 8.5 8.5 13.5 2 7"
+  }), /*#__PURE__*/React.createElement("polyline", {
+    points: "16 17 22 17 22 11"
+  })),
+  PiggyBank: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M2 9v1c0 1.1.9 2 2 2h1"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M16 11h.01"
+  })),
+  CreditCard: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("rect", {
+    width: "20",
+    height: "14",
+    x: "2",
+    y: "5",
+    rx: "2"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "2",
+    y1: "10",
+    x2: "22",
+    y2: "10"
+  })),
+  Shield: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"
+  })),
+  Home: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+  }), /*#__PURE__*/React.createElement("polyline", {
+    points: "9 22 9 12 15 12 15 22"
+  })),
+  Gift: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("rect", {
+    x: "3",
+    y: "8",
+    width: "18",
+    height: "4",
+    rx: "1"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M12 8v13"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"
+  })),
+  Award: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "8",
+    r: "6"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"
+  })),
+  Laptop: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"
+  })),
+  Briefcase: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("rect", {
+    width: "20",
+    height: "14",
+    x: "2",
+    y: "7",
+    rx: "2",
+    ry: "2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"
+  })),
+  Percent: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("line", {
+    x1: "19",
+    y1: "5",
+    x2: "5",
+    y2: "19"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "6.5",
+    cy: "6.5",
+    r: "2.5"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "17.5",
+    cy: "17.5",
+    r: "2.5"
+  })),
+  Heart: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+  })),
+  ShoppingCart: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "8",
+    cy: "21",
+    r: "1"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "19",
+    cy: "21",
+    r: "1"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"
+  })),
+  Fuel: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("line", {
+    x1: "3",
+    y1: "22",
+    x2: "15",
+    y2: "22"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M4 9h10"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V9.83a2 2 0 0 0-.59-1.42L18 5"
+  })),
+  Utensils: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M18 2v6a3 3 0 0 1-3 3 3 3 0 0 1-3-3V2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M15 11v11"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M5 2v10a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M9 14v8"
+  })),
+  Zap: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("polygon", {
+    points: "13 2 3 14 12 14 11 22 21 10 12 10 13 2"
+  })),
+  Car: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 11.1 2 11.5 2 12v4c0 .6.4 1 1 1h2"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "7",
+    cy: "17",
+    r: "2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M9 17h6"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "17",
+    cy: "17",
+    r: "2"
+  })),
+  Download: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+  }), /*#__PURE__*/React.createElement("polyline", {
+    points: "7 10 12 15 17 10"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "12",
+    y1: "15",
+    x2: "12",
+    y2: "3"
+  })),
+  RefreshCw: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M21 3v5h-5"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M8 16H3v5"
+  })),
+  Smartphone: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("rect", {
+    width: "14",
+    height: "20",
+    x: "5",
+    y: "2",
+    rx: "2",
+    ry: "2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M12 18h.01"
+  })),
+  Monitor: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("rect", {
+    width: "20",
+    height: "14",
+    x: "2",
+    y: "3",
+    rx: "2"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "8",
+    y1: "21",
+    x2: "16",
+    y2: "21"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "12",
+    y1: "17",
+    x2: "12",
+    y2: "21"
+  })),
+  Tablet: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("rect", {
+    width: "16",
+    height: "20",
+    x: "4",
+    y: "2",
+    rx: "2",
+    ry: "2"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "12",
+    y1: "18",
+    x2: "12.01",
+    y2: "18"
+  })),
+  Key: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "7.5",
+    cy: "15.5",
+    r: "5.5"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "m21 2-9.6 9.6"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "m15.5 7.5 3 3L22 7l-3-3"
+  })),
+  Tool: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
+  })),
+  Droplet: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"
+  })),
+  Flame: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"
+  })),
+  ShoppingBag: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M3 6h18"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M16 10a4 4 0 0 1-8 0"
+  })),
+  Shirt: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"
+  })),
+  Wifi: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M12 20h.01"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M2 8.82a15 15 0 0 1 20 0"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M5 12.859a10 10 0 0 1 14 0"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M8.5 16.429a5 5 0 0 1 7 0"
+  })),
+  Sparkles: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
+  })),
+  Activity: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("polyline", {
+    points: "22 12 18 12 15 21 9 3 6 12 2 12"
+  })),
+  Film: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("rect", {
+    width: "20",
+    height: "20",
+    x: "2",
+    y: "2",
+    rx: "2.18",
+    ry: "2.18"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "7",
+    y1: "2",
+    x2: "7",
+    y2: "22"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "17",
+    y1: "2",
+    x2: "17",
+    y2: "22"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "2",
+    y1: "12",
+    x2: "22",
+    y2: "12"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "2",
+    y1: "7",
+    x2: "7",
+    y2: "7"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "2",
+    y1: "17",
+    x2: "7",
+    y2: "17"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "17",
+    y1: "17",
+    x2: "22",
+    y2: "17"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "17",
+    y1: "7",
+    x2: "22",
+    y2: "7"
+  })),
+  Bus: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M8 6v6"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M16 6v6"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M4 18v3a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-3"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M17 18v3a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-3"
+  }), /*#__PURE__*/React.createElement("rect", {
+    width: "18",
+    height: "14",
+    x: "3",
+    y: "4",
+    rx: "2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M3 12h18"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "7",
+    cy: "15",
+    r: "1"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "17",
+    cy: "15",
+    r: "1"
+  })),
+  Users: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "9",
+    cy: "7",
+    r: "4"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M22 21v-2a4 4 0 0 0-3-3.87"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M16 3.13a4 4 0 0 1 0 7.75"
+  })),
+  Compass: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "12",
+    r: "10"
+  }), /*#__PURE__*/React.createElement("polygon", {
+    points: "16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"
+  })),
+  MoreHorizontal: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "12",
+    r: "1"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "19",
+    cy: "12",
+    r: "1"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "5",
+    cy: "12",
+    r: "1"
+  })),
+  PieChart: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M21.21 15.89A10 10 0 1 1 8 2.83"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M22 12A10 10 0 0 0 12 2v10z"
+  })),
+  Printer: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("polyline", {
+    points: "6 9 6 2 18 2 18 9"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
+  }), /*#__PURE__*/React.createElement("rect", {
+    width: "12",
+    height: "8",
+    x: "6",
+    y: "14"
+  })),
+  UserCheck: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "9",
+    cy: "7",
+    r: "4"
+  }), /*#__PURE__*/React.createElement("polyline", {
+    points: "16 11 18 13 22 9"
+  })),
+  Receipt: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M16 8h-8"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M16 12h-8"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M10 16H8"
+  })),
+  Landmark: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("line", {
+    x1: "3",
+    y1: "22",
+    x2: "21",
+    y2: "22"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "6",
+    y1: "18",
+    x2: "6",
+    y2: "11"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "10",
+    y1: "18",
+    x2: "10",
+    y2: "11"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "14",
+    y1: "18",
+    x2: "14",
+    y2: "11"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "18",
+    y1: "18",
+    x2: "18",
+    y2: "11"
+  }), /*#__PURE__*/React.createElement("polygon", {
+    points: "12 2 20 7 4 7"
+  })),
+  LogIn: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"
+  }), /*#__PURE__*/React.createElement("polyline", {
+    points: "10 17 15 12 10 7"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "15",
+    y1: "12",
+    x2: "3",
+    y2: "12"
+  })),
+  LogOut: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"
+  }), /*#__PURE__*/React.createElement("polyline", {
+    points: "16 17 21 12 16 7"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "21",
+    y1: "12",
+    x2: "9",
+    y2: "12"
+  })),
+  KeyRound: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "16.5",
+    cy: "7.5",
+    r: ".5",
+    fill: "currentColor"
+  })),
+  Eye: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "12",
+    r: "3"
+  })),
+  EyeOff: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M9.88 9.88a3 3 0 1 0 4.24 4.24"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "2",
+    x2: "22",
+    y1: "2",
+    y2: "22"
+  })),
+  Lock: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("rect", {
+    width: "18",
+    height: "11",
+    x: "3",
+    y: "11",
+    rx: "2",
+    ry: "2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M7 11V7a5 5 0 0 1 10 0v4"
+  })),
+  Unlock: props => /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: props.size || 20,
+    height: props.size || 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: props.className || ""
+  }, /*#__PURE__*/React.createElement("rect", {
+    width: "18",
+    height: "11",
+    x: "3",
+    y: "11",
+    rx: "2",
+    ry: "2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M7 11V7a5 5 0 0 1 9.9-1"
+  }))
+};
+
+// Helper to resolve icon by string name
+window.getIconComponent = function (iconName, props = {}) {
+  const map = {
+    'arrow-left': window.Icons.ArrowLeft,
+    'calendar': window.Icons.Calendar,
+    'paperclip': window.Icons.Paperclip,
+    'camera': window.Icons.Camera,
+    'file-text': window.Icons.FileText,
+    'backspace': window.Icons.Backspace,
+    'plus': window.Icons.Plus,
+    'minus': window.Icons.Minus,
+    'x': window.Icons.X,
+    'check': window.Icons.Check,
+    'search': window.Icons.Search,
+    'trash': window.Icons.Trash2,
+    'trash-2': window.Icons.Trash2,
+    'edit': window.Icons.Edit2,
+    'edit-2': window.Icons.Edit2,
+    'chevron-down': window.Icons.ChevronDown,
+    'chevron-right': window.Icons.ChevronRight,
+    'dashboard': window.Icons.LayoutDashboard,
+    'cashbook': window.Icons.BookOpen,
+    'reports': window.Icons.BarChart3,
+    'categories': window.Icons.Tags,
+    'profile': window.Icons.UserCheck,
+    'settings': window.Icons.Settings,
+    'wallet': window.Icons.Wallet,
+    'trending-up': window.Icons.TrendingUp,
+    'trending-down': window.Icons.TrendingDown,
+    'piggy-bank': window.Icons.PiggyBank,
+    'credit-card': window.Icons.CreditCard,
+    'shield': window.Icons.Shield,
+    'home': window.Icons.Home,
+    'gift': window.Icons.Gift,
+    'award': window.Icons.Award,
+    'laptop': window.Icons.Laptop,
+    'briefcase': window.Icons.Briefcase,
+    'percent': window.Icons.Percent,
+    'heart': window.Icons.Heart,
+    'shopping-cart': window.Icons.ShoppingCart,
+    'shopping-bag': window.Icons.ShoppingBag,
+    'shirt': window.Icons.Shirt,
+    'fuel': window.Icons.Fuel,
+    'utensils': window.Icons.Utensils,
+    'zap': window.Icons.Zap,
+    'car': window.Icons.Car,
+    'download': window.Icons.Download,
+    'refresh': window.Icons.RefreshCw,
+    'smartphone': window.Icons.Smartphone,
+    'monitor': window.Icons.Monitor,
+    'tablet': window.Icons.Tablet,
+    'key': window.Icons.Key,
+    'tool': window.Icons.Tool,
+    'droplet': window.Icons.Droplet,
+    'flame': window.Icons.Flame,
+    'wifi': window.Icons.Wifi,
+    'sparkles': window.Icons.Sparkles,
+    'activity': window.Icons.Activity,
+    'film': window.Icons.Film,
+    'bus': window.Icons.Bus,
+    'users': window.Icons.Users,
+    'compass': window.Icons.Compass,
+    'more-horizontal': window.Icons.MoreHorizontal,
+    'printer': window.Icons.Printer,
+    'receipt': window.Icons.Receipt,
+    'landmark': window.Icons.Landmark,
+    'log-in': window.Icons.LogIn,
+    'log-out': window.Icons.LogOut,
+    'key-round': window.Icons.KeyRound,
+    'eye': window.Icons.Eye,
+    'eye-off': window.Icons.EyeOff,
+    'lock': window.Icons.Lock,
+    'unlock': window.Icons.Unlock,
+    'user': window.Icons.UserCheck
+  };
+  const Component = map[iconName] || window.Icons.Tags;
+  return /*#__PURE__*/React.createElement(Component, props);
+};
+
+// ===== FILE: src/loginAndSecurity.js =====
+// Login Page, Security & Salary Privacy Protection, and Live Camera Modal
+// Handles user authentication, salary privacy password masking, camera capture, and file explorer
+
+// ============================================================================
+// 1. SALARY PRIVACY VIEWER (Requires user password every time to view salary)
+// ============================================================================
+window.SalaryPrivacyViewer = function ({
+  amount,
+  currency = "₹",
+  currentUser,
+  label = "Salary",
+  subText = null,
+  inline = false,
+  size = "normal" // "small" | "normal" | "large"
+}) {
+  const [isRevealed, setIsRevealed] = useState(false);
+  const [showPromptModal, setShowPromptModal] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const [showPasswordText, setShowPasswordText] = useState(false);
+  const passwordInputRef = useRef(null);
+  const handleOpenPrompt = e => {
+    if (e) e.stopPropagation();
+    setPasswordInput("");
+    setErrorMsg("");
+    setShowPromptModal(true);
+    setTimeout(() => {
+      if (passwordInputRef.current) passwordInputRef.current.focus();
+    }, 100);
+  };
+  const handleVerifyPassword = e => {
+    if (e) e.preventDefault();
+    setErrorMsg("");
+    if (!passwordInput) {
+      setErrorMsg("Please enter your password.");
+      return;
+    }
+
+    // Verify password against current active user's password or admin password
+    const isValid = currentUser && passwordInput === currentUser.password || passwordInput === "Passwd@123";
+    if (!isValid) {
+      setErrorMsg("Incorrect password. Please try again.");
+      return;
+    }
+
+    // Password verified! Reveal salary
+    setIsRevealed(true);
+    setShowPromptModal(false);
+    setPasswordInput("");
+    setErrorMsg("");
+  };
+  const handleLockAgain = e => {
+    if (e) e.stopPropagation();
+    setIsRevealed(false);
+  };
+
+  // Small inline chip (used in Header)
+  if (inline && size === "small") {
+    return /*#__PURE__*/React.createElement("span", {
+      className: "inline-flex items-center space-x-1.5"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "text-slate-400"
+    }, "Salary:"), isRevealed ? /*#__PURE__*/React.createElement("span", {
+      className: "font-extrabold text-slate-800"
+    }, window.formatCurrency(amount, currency), /*#__PURE__*/React.createElement("button", {
+      onClick: handleLockAgain,
+      className: "ml-1.5 text-slate-400 hover:text-slate-600 text-[10px] underline font-bold",
+      title: "Hide Salary"
+    }, "[Hide]")) : /*#__PURE__*/React.createElement("span", {
+      className: "inline-flex items-center space-x-1"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "font-mono text-slate-400 tracking-widest text-xs"
+    }, "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"), /*#__PURE__*/React.createElement("button", {
+      onClick: handleOpenPrompt,
+      className: "text-[#9B111E] hover:text-[#7B0D18] text-[10px] font-bold underline flex items-center space-x-0.5 ml-1",
+      title: "Enter password to view salary"
+    }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('eye', {
+      size: 11
+    })), /*#__PURE__*/React.createElement("span", null, "View"))), showPromptModal && /*#__PURE__*/React.createElement("div", {
+      className: "fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl animate-scale-in text-left"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center justify-between pb-3 border-b border-slate-100"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center space-x-2"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "p-1.5 rounded-lg bg-red-50 text-[#9B111E]"
+    }, window.getIconComponent('lock', {
+      size: 16
+    })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h4", {
+      className: "font-extrabold text-slate-900 text-sm"
+    }, "Salary Privacy Verification"), /*#__PURE__*/React.createElement("p", {
+      className: "text-[10px] text-slate-400"
+    }, "Protected salaried individual data"))), /*#__PURE__*/React.createElement("button", {
+      onClick: () => setShowPromptModal(false),
+      className: "text-slate-400 hover:text-slate-600 p-1"
+    }, window.getIconComponent('x', {
+      size: 16
+    }))), /*#__PURE__*/React.createElement("form", {
+      onSubmit: handleVerifyPassword,
+      className: "mt-4 space-y-3"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: "text-xs text-slate-600"
+    }, "Enter password for ", /*#__PURE__*/React.createElement("strong", null, currentUser ? currentUser.name : 'user'), " to reveal salary details."), errorMsg && /*#__PURE__*/React.createElement("div", {
+      className: "p-2 bg-red-50 border border-red-200 text-xs text-[#9B111E] font-semibold rounded-lg"
+    }, errorMsg), /*#__PURE__*/React.createElement("div", {
+      className: "relative"
+    }, /*#__PURE__*/React.createElement("input", {
+      ref: passwordInputRef,
+      type: showPasswordText ? "text" : "password",
+      value: passwordInput,
+      onChange: e => setPasswordInput(e.target.value),
+      placeholder: "Enter password (e.g. Passwd@123)",
+      className: "w-full p-2.5 pr-10 border border-slate-200 rounded-lg text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#9B111E]",
+      required: true
+    }), /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      onClick: () => setShowPasswordText(!showPasswordText),
+      className: "absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+    }, window.getIconComponent(showPasswordText ? 'eye-off' : 'eye', {
+      size: 14
+    }))), /*#__PURE__*/React.createElement("div", {
+      className: "flex space-x-2 pt-2"
+    }, /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      onClick: () => setShowPromptModal(false),
+      className: "flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold"
+    }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+      type: "submit",
+      className: "flex-1 py-2 px-3 bg-[#9B111E] hover:bg-[#850d18] text-white rounded-xl text-xs font-bold shadow-xs"
+    }, "Unlock Salary"))))));
+  }
+
+  // Large Card (used in Income Report)
+  if (size === "large") {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "relative"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: "text-[11px] font-bold text-slate-400 uppercase tracking-wider"
+    }, label), isRevealed ? /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center justify-between mt-1"
+    }, /*#__PURE__*/React.createElement("h3", {
+      className: "text-2xl font-extrabold text-slate-900"
+    }, window.formatCurrency(amount, currency)), /*#__PURE__*/React.createElement("button", {
+      onClick: handleLockAgain,
+      className: "text-xs text-slate-400 hover:text-slate-600 flex items-center space-x-1 font-semibold",
+      title: "Lock salary again"
+    }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('lock', {
+      size: 13
+    })), /*#__PURE__*/React.createElement("span", null, "Hide"))) : /*#__PURE__*/React.createElement("div", {
+      className: "mt-1 flex items-center justify-between"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center space-x-2"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "text-2xl font-extrabold text-slate-400 tracking-widest font-mono"
+    }, "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"), /*#__PURE__*/React.createElement("span", {
+      className: "text-slate-400"
+    }, window.getIconComponent('lock', {
+      size: 16
+    }))), /*#__PURE__*/React.createElement("button", {
+      onClick: handleOpenPrompt,
+      className: "px-2.5 py-1 bg-red-50 hover:bg-red-100 text-[#9B111E] rounded-lg text-xs font-bold transition flex items-center space-x-1"
+    }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('eye', {
+      size: 13
+    })), /*#__PURE__*/React.createElement("span", null, "Unlock Salary"))), subText && /*#__PURE__*/React.createElement("p", {
+      className: "text-xs text-slate-500 mt-1"
+    }, subText), showPromptModal && /*#__PURE__*/React.createElement("div", {
+      className: "fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl animate-scale-in text-left"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center justify-between pb-3 border-b border-slate-100"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center space-x-2"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "p-1.5 rounded-lg bg-red-50 text-[#9B111E]"
+    }, window.getIconComponent('lock', {
+      size: 16
+    })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h4", {
+      className: "font-extrabold text-slate-900 text-sm"
+    }, "Salary Privacy Verification"), /*#__PURE__*/React.createElement("p", {
+      className: "text-[10px] text-slate-400"
+    }, "Password required to view salary"))), /*#__PURE__*/React.createElement("button", {
+      onClick: () => setShowPromptModal(false),
+      className: "text-slate-400 hover:text-slate-600 p-1"
+    }, window.getIconComponent('x', {
+      size: 16
+    }))), /*#__PURE__*/React.createElement("form", {
+      onSubmit: handleVerifyPassword,
+      className: "mt-4 space-y-3"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: "text-xs text-slate-600"
+    }, "Please enter user password for ", /*#__PURE__*/React.createElement("strong", null, currentUser ? currentUser.name : 'user'), " to reveal salary details."), errorMsg && /*#__PURE__*/React.createElement("div", {
+      className: "p-2 bg-red-50 border border-red-200 text-xs text-[#9B111E] font-semibold rounded-lg"
+    }, errorMsg), /*#__PURE__*/React.createElement("div", {
+      className: "relative"
+    }, /*#__PURE__*/React.createElement("input", {
+      ref: passwordInputRef,
+      type: showPasswordText ? "text" : "password",
+      value: passwordInput,
+      onChange: e => setPasswordInput(e.target.value),
+      placeholder: "Enter password (e.g. Passwd@123)",
+      className: "w-full p-2.5 pr-10 border border-slate-200 rounded-lg text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#9B111E]",
+      required: true
+    }), /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      onClick: () => setShowPasswordText(!showPasswordText),
+      className: "absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+    }, window.getIconComponent(showPasswordText ? 'eye-off' : 'eye', {
+      size: 14
+    }))), /*#__PURE__*/React.createElement("div", {
+      className: "flex space-x-2 pt-2"
+    }, /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      onClick: () => setShowPromptModal(false),
+      className: "flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold"
+    }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+      type: "submit",
+      className: "flex-1 py-2 px-3 bg-[#9B111E] hover:bg-[#850d18] text-white rounded-xl text-xs font-bold shadow-xs"
+    }, "Unlock Salary"))))));
+  }
+
+  // Standard Normal display (used in Dashboard header banner)
+  return /*#__PURE__*/React.createElement("div", {
+    className: "inline-flex items-center space-x-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] text-slate-400"
+  }, label, ":"), isRevealed ? /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] font-extrabold text-slate-800 flex items-center space-x-1.5"
+  }, /*#__PURE__*/React.createElement("span", null, window.formatCurrency(amount, currency)), /*#__PURE__*/React.createElement("button", {
+    onClick: handleLockAgain,
+    className: "text-[10px] text-slate-400 hover:text-slate-600 underline font-semibold"
+  }, "[Hide]")) : /*#__PURE__*/React.createElement("span", {
+    className: "inline-flex items-center space-x-1"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] font-mono tracking-widest text-slate-400"
+  }, "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"), /*#__PURE__*/React.createElement("button", {
+    onClick: handleOpenPrompt,
+    className: "text-[10px] font-bold text-[#9B111E] hover:underline flex items-center space-x-0.5 ml-1"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('eye', {
+    size: 11
+  })), /*#__PURE__*/React.createElement("span", null, "View"))), showPromptModal && /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl animate-scale-in text-left"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between pb-3 border-b border-slate-100"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "p-1.5 rounded-lg bg-red-50 text-[#9B111E]"
+  }, window.getIconComponent('lock', {
+    size: 16
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h4", {
+    className: "font-extrabold text-slate-900 text-sm"
+  }, "Salary Privacy Verification"), /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-slate-400"
+  }, "Password required to view salary"))), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setShowPromptModal(false),
+    className: "text-slate-400 hover:text-slate-600 p-1"
+  }, window.getIconComponent('x', {
+    size: 16
+  }))), /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleVerifyPassword,
+    className: "mt-4 space-y-3"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-600"
+  }, "Please enter user password for ", /*#__PURE__*/React.createElement("strong", null, currentUser ? currentUser.name : 'user'), " to reveal salary details."), errorMsg && /*#__PURE__*/React.createElement("div", {
+    className: "p-2 bg-red-50 border border-red-200 text-xs text-[#9B111E] font-semibold rounded-lg"
+  }, errorMsg), /*#__PURE__*/React.createElement("div", {
+    className: "relative"
+  }, /*#__PURE__*/React.createElement("input", {
+    ref: passwordInputRef,
+    type: showPasswordText ? "text" : "password",
+    value: passwordInput,
+    onChange: e => setPasswordInput(e.target.value),
+    placeholder: "Enter password (e.g. Passwd@123)",
+    className: "w-full p-2.5 pr-10 border border-slate-200 rounded-lg text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#9B111E]",
+    required: true
+  }), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setShowPasswordText(!showPasswordText),
+    className: "absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+  }, window.getIconComponent(showPasswordText ? 'eye-off' : 'eye', {
+    size: 14
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "flex space-x-2 pt-2"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setShowPromptModal(false),
+    className: "flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold"
+  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    className: "flex-1 py-2 px-3 bg-[#9B111E] hover:bg-[#850d18] text-white rounded-xl text-xs font-bold shadow-xs"
+  }, "Unlock Salary"))))));
+};
+
+// ============================================================================
+// 2. SALARY PRIVACY INPUT (Used in Profile Settings form)
+// ============================================================================
+window.SalaryPrivacyInput = function ({
+  value,
+  onChange,
+  currentUser,
+  currency = "₹"
+}) {
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [showPromptModal, setShowPromptModal] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const [showPasswordText, setShowPasswordText] = useState(false);
+  const handleVerifyPassword = e => {
+    if (e) e.preventDefault();
+    if (!passwordInput) {
+      setErrorMsg("Please enter your password.");
+      return;
+    }
+    const isValid = currentUser && passwordInput === currentUser.password || passwordInput === "Passwd@123";
+    if (!isValid) {
+      setErrorMsg("Incorrect password. Please try again.");
+      return;
+    }
+    setIsUnlocked(true);
+    setShowPromptModal(false);
+    setPasswordInput("");
+    setErrorMsg("");
+  };
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-1"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block"
+  }, "Monthly Net Salary (", currency, ")"), isUnlocked ? /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setIsUnlocked(false),
+    className: "text-[10px] text-slate-400 hover:text-slate-600 font-bold underline"
+  }, "[Lock Salary]") : /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => {
+      setPasswordInput("");
+      setErrorMsg("");
+      setShowPromptModal(true);
+    },
+    className: "text-[10px] text-[#9B111E] hover:underline font-bold flex items-center space-x-1"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('lock', {
+    size: 10
+  })), /*#__PURE__*/React.createElement("span", null, "Unlock to View/Edit"))), isUnlocked ? /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    value: value,
+    onChange: e => onChange(Number(e.target.value)),
+    className: "w-full p-2.5 border border-slate-200 rounded-lg font-bold text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-[#9B111E]"
+  }) : /*#__PURE__*/React.createElement("div", {
+    onClick: () => {
+      setPasswordInput("");
+      setErrorMsg("");
+      setShowPromptModal(true);
+    },
+    className: "w-full p-2.5 border border-slate-200 rounded-lg bg-slate-50 cursor-pointer flex items-center justify-between",
+    title: "Click to enter password and unlock"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-mono text-slate-400 tracking-widest text-sm"
+  }, "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-bold text-[#9B111E] flex items-center space-x-1"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('eye', {
+    size: 13
+  })), /*#__PURE__*/React.createElement("span", null, "Reveal"))), showPromptModal && /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl animate-scale-in text-left"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between pb-3 border-b border-slate-100"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "p-1.5 rounded-lg bg-red-50 text-[#9B111E]"
+  }, window.getIconComponent('lock', {
+    size: 16
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h4", {
+    className: "font-extrabold text-slate-900 text-sm"
+  }, "Verify Password"), /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-slate-400"
+  }, "Unlock salary editing"))), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setShowPromptModal(false),
+    className: "text-slate-400 hover:text-slate-600 p-1"
+  }, window.getIconComponent('x', {
+    size: 16
+  }))), /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleVerifyPassword,
+    className: "mt-4 space-y-3"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-600"
+  }, "Enter password to view and edit your net monthly salary."), errorMsg && /*#__PURE__*/React.createElement("div", {
+    className: "p-2 bg-red-50 border border-red-200 text-xs text-[#9B111E] font-semibold rounded-lg"
+  }, errorMsg), /*#__PURE__*/React.createElement("div", {
+    className: "relative"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: showPasswordText ? "text" : "password",
+    value: passwordInput,
+    onChange: e => setPasswordInput(e.target.value),
+    placeholder: "Enter password (e.g. Passwd@123)",
+    className: "w-full p-2.5 pr-10 border border-slate-200 rounded-lg text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#9B111E]",
+    autoFocus: true,
+    required: true
+  }), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setShowPasswordText(!showPasswordText),
+    className: "absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+  }, window.getIconComponent(showPasswordText ? 'eye-off' : 'eye', {
+    size: 14
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "flex space-x-2 pt-2"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setShowPromptModal(false),
+    className: "flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold"
+  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    className: "flex-1 py-2 px-3 bg-[#9B111E] hover:bg-[#850d18] text-white rounded-xl text-xs font-bold shadow-xs"
+  }, "Unlock Salary"))))));
+};
+
+// ============================================================================
+// 3. LIVE CAMERA CAPTURE MODAL (Opens Camera Viewfinder / Snaps Photos)
+// ============================================================================
+window.LiveCameraModal = function ({
+  onCapture,
+  onClose,
+  onOpenDeviceFilePicker
+}) {
+  const videoRef = useRef(null);
+  const streamRef = useRef(null);
+  const [cameraActive, setCameraActive] = useState(false);
+  const [cameraError, setCameraError] = useState(null);
+  const [facingMode, setFacingMode] = useState("environment"); // "user" or "environment"
+
+  // Start Camera Stream
+  const startCamera = async mode => {
+    try {
+      setCameraError(null);
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setCameraError("Camera API is not supported in this browser environment. Please use device camera or file browser.");
+        return;
+      }
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: mode ? {
+            ideal: mode
+          } : "environment"
+        },
+        audio: false
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play().catch(() => {});
+        setCameraActive(true);
+      }
+    } catch (err) {
+      console.warn("Camera start warning:", err);
+      setCameraError("Unable to access live camera viewfinder (" + (err.name || "Permission") + "). You can use the device camera or file explorer below.");
+      setCameraActive(false);
+    }
+  };
+  useEffect(() => {
+    startCamera(facingMode);
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [facingMode]);
+
+  // Capture Snapshot from Video Frame
+  const handleSnapPhoto = () => {
+    if (!videoRef.current) return;
+    try {
+      const video = videoRef.current;
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 480;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+      const snapName = `Camera_Bill_${new Date().toLocaleDateString('en-GB').replace(/\//g, '')}_${Date.now().toString().slice(-4)}.jpg`;
+      onCapture(dataUrl, snapName);
+    } catch (e) {
+      alert("Error capturing snapshot. Please choose file from device.");
+    }
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-slate-900 text-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl flex flex-col border border-slate-700 animate-scale-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "p-3 sm:p-4 bg-slate-800/90 flex items-center justify-between border-b border-slate-700"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "p-1.5 rounded-lg bg-[#9B111E] text-white"
+  }, window.getIconComponent('camera', {
+    size: 18
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "font-extrabold text-sm sm:text-base"
+  }, "Camera \u2022 Capture Bill / Receipt"), /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-slate-300"
+  }, "Take a clear photo of your receipt or expense proof"))), /*#__PURE__*/React.createElement("button", {
+    onClick: onClose,
+    className: "p-1 text-slate-400 hover:text-white rounded-full"
+  }, window.getIconComponent('x', {
+    size: 20
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "relative bg-black flex items-center justify-center min-h-[300px] sm:min-h-[360px] overflow-hidden"
+  }, cameraActive ? /*#__PURE__*/React.createElement("video", {
+    ref: videoRef,
+    autoPlay: true,
+    playsInline: true,
+    muted: true,
+    className: "w-full h-full max-h-[420px] object-cover"
+  }) : /*#__PURE__*/React.createElement("div", {
+    className: "p-6 text-center space-y-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-16 h-16 mx-auto rounded-full bg-slate-800 flex items-center justify-center text-slate-400"
+  }, window.getIconComponent('camera', {
+    size: 32
+  })), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-300 max-w-xs mx-auto"
+  }, cameraError || "Initializing camera..."), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => {
+      onClose();
+      if (onOpenDeviceFilePicker) onOpenDeviceFilePicker();
+    },
+    className: "px-4 py-2.5 bg-[#9B111E] hover:bg-[#850d18] text-white rounded-xl text-xs font-bold shadow-md inline-flex items-center space-x-2"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('camera', {
+    size: 16
+  })), /*#__PURE__*/React.createElement("span", null, "Open Device Camera / Photos"))), cameraActive && /*#__PURE__*/React.createElement("div", {
+    className: "absolute inset-4 pointer-events-none border-2 border-white/30 rounded-xl flex items-center justify-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-12 h-12 border-t-2 border-l-2 border-emerald-400 absolute top-2 left-2"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "w-12 h-12 border-t-2 border-r-2 border-emerald-400 absolute top-2 right-2"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "w-12 h-12 border-b-2 border-l-2 border-emerald-400 absolute bottom-2 left-2"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "w-12 h-12 border-b-2 border-r-2 border-emerald-400 absolute bottom-2 right-2"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] text-white/60 bg-black/40 px-2 py-0.5 rounded-full font-mono"
+  }, "Align Bill / Receipt Inside Frame"))), /*#__PURE__*/React.createElement("div", {
+    className: "p-4 bg-slate-800 flex items-center justify-around border-t border-slate-700"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setFacingMode(facingMode === "user" ? "environment" : "user"),
+    className: "p-3 rounded-full bg-slate-700 text-slate-300 hover:text-white hover:bg-slate-600 transition",
+    title: "Switch Front/Rear Camera"
+  }, window.getIconComponent('refresh', {
+    size: 20
+  })), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: cameraActive ? handleSnapPhoto : () => {
+      onClose();
+      if (onOpenDeviceFilePicker) onOpenDeviceFilePicker();
+    },
+    className: "w-16 h-16 rounded-full bg-[#9B111E] hover:bg-[#b01422] active:scale-95 border-4 border-white shadow-xl flex items-center justify-center transition",
+    title: "Take Photo"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "w-6 h-6 rounded-full bg-white"
+  })), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => {
+      onClose();
+      if (onOpenDeviceFilePicker) onOpenDeviceFilePicker();
+    },
+    className: "p-3 rounded-full bg-slate-700 text-slate-300 hover:text-white hover:bg-slate-600 transition",
+    title: "Browse Device Files / Phone Camera"
+  }, window.getIconComponent('smartphone', {
+    size: 20
+  })))));
+};
+
+// ============================================================================
+// 4. FULL DEDICATED LOGIN PAGE COMPONENT
+// ============================================================================
+window.LoginPage = function ({
+  users,
+  onLoginSuccess
+}) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Form submit (Handles Enter key automatically via form onSubmit)
+  const handleSubmit = e => {
+    if (e) e.preventDefault();
+    setErrorMessage(null);
+    setIsSubmitting(true);
+    const cleanEmail = email.trim().toLowerCase();
+    const user = users.find(u => u.email.toLowerCase() === cleanEmail);
+    if (!user) {
+      setErrorMessage("No account registered with this email address.");
+      setIsSubmitting(false);
+      return;
+    }
+    if (user.password !== password) {
+      setErrorMessage("Incorrect password. Default demo password is Passwd@123");
+      setIsSubmitting(false);
+      return;
+    }
+    if (user.status === 'inactive') {
+      setErrorMessage(`Access Denied: The account for ${user.name} (${user.email}) is currently INACTIVE. Please contact admin@cashbook.com to reactivate access.`);
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Success!
+    setTimeout(() => {
+      setIsSubmitting(false);
+      onLoginSuccess(user);
+    }, 200);
+  };
+
+  // Quick 1-Click Login for effortless testing
+  const handleQuickLogin = (targetEmail, targetPassword) => {
+    setEmail(targetEmail);
+    setPassword(targetPassword);
+    setErrorMessage(null);
+    const user = users.find(u => u.email.toLowerCase() === targetEmail.toLowerCase());
+    if (user) {
+      if (user.status === 'inactive') {
+        setErrorMessage(`Access Denied: The account for ${user.name} is currently INACTIVE.`);
+        return;
+      }
+      onLoginSuccess(user);
+    }
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "min-h-screen w-full bg-gradient-to-br from-slate-900 via-slate-800 to-[#7B0D18] flex items-center justify-center p-4 sm:p-6 text-slate-800 font-sans selection:bg-[#9B111E] selection:text-white"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 animate-scale-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-[#9B111E] p-6 text-white text-center relative overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "absolute -top-12 -right-12 w-32 h-32 rounded-full bg-white/10 blur-xl"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "w-14 h-14 mx-auto rounded-2xl bg-white text-[#9B111E] flex items-center justify-center font-extrabold text-2xl shadow-lg mb-3"
+  }, "\u20B9"), /*#__PURE__*/React.createElement("h1", {
+    className: "text-xl sm:text-2xl font-extrabold tracking-tight"
+  }, "Personal Finance Cash Book"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-red-100 font-medium mt-1"
+  }, "Salaried Money Management \u2022 IN / OUT Ledger"), /*#__PURE__*/React.createElement("div", {
+    className: "mt-3 inline-flex items-center space-x-1.5 px-3 py-1 bg-black/20 rounded-full text-[11px] font-bold"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "w-2 h-2 rounded-full bg-emerald-400"
+  }), /*#__PURE__*/React.createElement("span", null, "Secure Salaried Portal"))), /*#__PURE__*/React.createElement("div", {
+    className: "p-6 space-y-5"
+  }, errorMessage && /*#__PURE__*/React.createElement("div", {
+    className: "p-3 bg-red-50 border border-red-200 rounded-xl text-xs font-semibold text-[#9B111E] flex items-start space-x-2 animate-fade-in"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "shrink-0 mt-0.5"
+  }, window.getIconComponent('x', {
+    size: 14
+  })), /*#__PURE__*/React.createElement("span", null, errorMessage)), /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleSubmit,
+    className: "space-y-4 text-xs"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-700 font-extrabold block mb-1"
+  }, "Email Address"), /*#__PURE__*/React.createElement("div", {
+    className: "relative"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "email",
+    value: email,
+    onChange: e => setEmail(e.target.value),
+    placeholder: "admin@cashbook.com or rahul@cashbook.com",
+    className: "w-full p-3 border border-slate-200 rounded-xl font-semibold text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-[#9B111E] text-xs transition",
+    required: true,
+    autoFocus: true
+  }))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-1"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-700 font-extrabold block"
+  }, "Password"), /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] text-slate-400"
+  }, "Demo: Passwd@123")), /*#__PURE__*/React.createElement("div", {
+    className: "relative"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: showPassword ? "text" : "password",
+    value: password,
+    onChange: e => setPassword(e.target.value),
+    placeholder: "Enter account password",
+    className: "w-full p-3 pr-10 border border-slate-200 rounded-xl font-semibold text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-[#9B111E] text-xs transition",
+    required: true
+  }), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setShowPassword(!showPassword),
+    className: "absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1",
+    title: showPassword ? "Hide password" : "Show password"
+  }, window.getIconComponent(showPassword ? 'eye-off' : 'eye', {
+    size: 16
+  })))), /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    disabled: isSubmitting,
+    className: "w-full py-3.5 bg-[#9B111E] hover:bg-[#850d18] active:scale-[0.99] text-white font-extrabold italic text-sm tracking-widest uppercase rounded-xl shadow-md transition flex items-center justify-center space-x-2"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('log-in', {
+    size: 16
+  })), /*#__PURE__*/React.createElement("span", null, isSubmitting ? "SIGNING IN..." : "SIGN IN TO CASH BOOK"))), /*#__PURE__*/React.createElement("div", {
+    className: "pt-4 border-t border-slate-100"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-2.5 text-center"
+  }, "Quick 1-Click Demo Logins"), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    onClick: () => handleQuickLogin("admin@cashbook.com", "Passwd@123"),
+    className: "p-2.5 rounded-xl border border-purple-200 bg-purple-50/70 hover:bg-purple-100/80 cursor-pointer transition flex items-center justify-between"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-2.5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-8 h-8 rounded-lg bg-purple-700 text-white font-extrabold text-xs flex items-center justify-center"
+  }, "\uD83D\uDC51"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-1.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-extrabold text-slate-900 text-xs"
+  }, "System Admin"), /*#__PURE__*/React.createElement("span", {
+    className: "text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-sm bg-purple-200 text-purple-900"
+  }, "Admin")), /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-slate-500"
+  }, "admin@cashbook.com \u2022 Full User & Status Control"))), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-bold text-purple-700"
+  }, "Login \u2192")), /*#__PURE__*/React.createElement("div", {
+    onClick: () => handleQuickLogin("rahul@cashbook.com", "Passwd@123"),
+    className: "p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 cursor-pointer transition flex items-center justify-between"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-2.5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-8 h-8 rounded-lg bg-[#9B111E] text-white font-extrabold text-xs flex items-center justify-center"
+  }, "RS"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-1.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-extrabold text-slate-900 text-xs"
+  }, "Rahul Sharma"), /*#__PURE__*/React.createElement("span", {
+    className: "text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-sm bg-slate-200 text-slate-800"
+  }, "User")), /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-slate-500"
+  }, "rahul@cashbook.com \u2022 Senior SWE @ TCS"))), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-bold text-[#9B111E]"
+  }, "Login \u2192")), /*#__PURE__*/React.createElement("div", {
+    onClick: () => handleQuickLogin("akash@cashbook.com", "Passwd@123"),
+    className: "p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 cursor-pointer transition flex items-center justify-between"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-2.5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-8 h-8 rounded-lg bg-teal-600 text-white font-extrabold text-xs flex items-center justify-center"
+  }, "K"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-1.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-extrabold text-slate-900 text-xs"
+  }, "Kiran"), /*#__PURE__*/React.createElement("span", {
+    className: "text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-sm bg-slate-200 text-slate-800"
+  }, "User")), /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-slate-500"
+  }, "akash@cashbook.com \u2022 Marketing Manager @ Infosys"))), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-bold text-teal-700"
+  }, "Login \u2192")))), /*#__PURE__*/React.createElement("div", {
+    className: "text-center pt-2"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-slate-400"
+  }, "Admin can create new users, manage existing profiles, and toggle active/inactive access.")))));
+};
+
+// ===== FILE: src/components.js =====
+// Core Components for Personal Finance Management Tool
+// Built with React 18, Tailwind CSS, and Clean Interactive UI
+
+// Utility for currency formatting (Indian Rupee format: ₹ 1,23,456)
+window.formatCurrency = function (amount, symbol = "₹") {
+  if (amount === undefined || amount === null || isNaN(amount)) return `${symbol} 0`;
+  const num = Math.round(Number(amount));
+  return `${symbol} ${num.toLocaleString('en-IN')}`;
+};
+
+// Format Date nicely (e.g. "07 Nov 26")
+window.formatDateDisplay = function (dateStr) {
+  if (!dateStr) return "07 Nov 26";
+  try {
+    const d = new Date(dateStr);
+    const day = String(d.getDate()).padStart(2, '0');
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = months[d.getMonth()];
+    const year = String(d.getFullYear()).slice(-2);
+    return `${day} ${month} ${year}`;
+  } catch (e) {
+    return dateStr;
+  }
+};
+
+// ============================================================================
+// 1. CASH BOOK ENTRY SCREEN (Pixel-perfect match to reference screenshot)
+// Responsive across Mobile, Tablet, and Desktop viewports
+// ============================================================================
+window.CashBookEntry = function ({
+  mode,
+  // 'IN' or 'OUT'
+  onBack,
+  onSave,
+  categories,
+  onAddCategory,
+  sampleAttachments,
+  deviceMode = 'mobile',
+  // 'mobile' | 'tablet' | 'desktop'
+  initialTransaction = null // Optional transaction for EDIT mode
+}) {
+  const isEditing = !!initialTransaction;
+  const [amountStr, setAmountStr] = useState(initialTransaction ? String(initialTransaction.amount) : "100");
+  const [calcExpression, setCalcExpression] = useState(initialTransaction ? String(initialTransaction.amount) : "100");
+  const [selectedCategory, setSelectedCategory] = useState(initialTransaction ? categories.find(c => c.id === initialTransaction.categoryId || c.name.toLowerCase() === initialTransaction.categoryName.toLowerCase()) || null : null);
+  const [comment, setComment] = useState(initialTransaction ? initialTransaction.comment || "" : "");
+  const [date, setDate] = useState(initialTransaction ? initialTransaction.date : "2026-11-07");
+  const [attachments, setAttachments] = useState(initialTransaction ? initialTransaction.attachments || [] : []);
+  const [isCategoryPickerOpen, setIsCategoryPickerOpen] = useState(false);
+  const [categorySearch, setCategorySearch] = useState("");
+  const [memoryValue, setMemoryValue] = useState(0);
+  const [toastMessage, setToastMessage] = useState(null);
+  const [showDatePickerModal, setShowDatePickerModal] = useState(false);
+  const [showLiveCamera, setShowLiveCamera] = useState(false);
+
+  // Hidden file inputs for Camera and PDF Explorer
+  const photoInputRef = useRef(null);
+  const pdfInputRef = useRef(null);
+
+  // Set default category on mount if not editing
+  useEffect(() => {
+    if (categories && categories.length > 0 && !selectedCategory) {
+      if (initialTransaction) {
+        const found = categories.find(c => c.id === initialTransaction.categoryId || c.name.toLowerCase() === initialTransaction.categoryName.toLowerCase());
+        if (found) setSelectedCategory(found);
+      } else if (mode === 'OUT') {
+        const defaultCat = categories.find(c => c.name.toLowerCase().includes('home') || c.name.toLowerCase().includes('grocer') || c.name.toLowerCase().includes('rent')) || categories[0];
+        setSelectedCategory(defaultCat);
+      } else {
+        const defaultCat = categories.find(c => c.name.toLowerCase().includes('salary')) || categories[0];
+        setSelectedCategory(defaultCat);
+      }
+    }
+  }, [categories, mode, initialTransaction]);
+  const showToast = msg => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 2500);
+  };
+
+  // Safe Calculator Evaluation
+  const evaluateExpression = expr => {
+    try {
+      let sanitized = expr.replace(/×/g, '*').replace(/÷/g, '/').replace(/%/g, '/100');
+      sanitized = sanitized.replace(/[\+\-\*\/]+$/, '');
+      if (!sanitized) return 0;
+      if (/^[0-9\.\+\-\*\/\s\(\)]+$/.test(sanitized)) {
+        const res = new Function(`return (${sanitized})`)();
+        if (isFinite(res)) {
+          return Math.max(0, Math.round(res * 100) / 100);
+        }
+      }
+      return parseFloat(sanitized) || 0;
+    } catch (e) {
+      return parseFloat(amountStr) || 0;
+    }
+  };
+
+  // Keypad click handler
+  const handleKeyClick = key => {
+    if (navigator.vibrate) navigator.vibrate(10);
+    if (key === 'C') {
+      setAmountStr("0");
+      setCalcExpression("0");
+      return;
+    }
+    if (key === 'BACKSPACE') {
+      let cur = calcExpression.toString();
+      if (cur.length <= 1 || cur === "0") {
+        setAmountStr("0");
+        setCalcExpression("0");
+      } else {
+        const next = cur.slice(0, -1);
+        setCalcExpression(next);
+        const evalVal = evaluateExpression(next);
+        setAmountStr(String(evalVal));
+      }
+      return;
+    }
+    if (key === 'M+') {
+      const curNum = parseFloat(amountStr) || 0;
+      const newMem = memoryValue + curNum;
+      setMemoryValue(newMem);
+      showToast(`Added ₹${curNum} to Memory (M = ₹${newMem})`);
+      return;
+    }
+    if (key === 'M-') {
+      const curNum = parseFloat(amountStr) || 0;
+      const newMem = Math.max(0, memoryValue - curNum);
+      setMemoryValue(newMem);
+      showToast(`Subtracted ₹${curNum} from Memory (M = ₹${newMem})`);
+      return;
+    }
+    if (key === '=') {
+      const res = evaluateExpression(calcExpression);
+      setAmountStr(String(res));
+      setCalcExpression(String(res));
+      return;
+    }
+    if (['+', '-', '×', '÷', '%'].includes(key)) {
+      const lastChar = calcExpression.slice(-1);
+      if (['+', '-', '×', '÷', '%'].includes(lastChar)) {
+        setCalcExpression(calcExpression.slice(0, -1) + key);
+      } else {
+        setCalcExpression(calcExpression + key);
+      }
+      return;
+    }
+
+    // Number or dot
+    if (calcExpression === "0" && key !== ".") {
+      setCalcExpression(key);
+      setAmountStr(key);
+    } else {
+      if (key === "." && calcExpression.includes(".")) {
+        const parts = calcExpression.split(/[\+\-\×\÷]/);
+        if (parts[parts.length - 1].includes(".")) return;
+      }
+      const next = calcExpression + key;
+      setCalcExpression(next);
+      const evalVal = evaluateExpression(next);
+      setAmountStr(String(evalVal));
+    }
+  };
+
+  // Handle Save / Update (Save data on enter or button click)
+  const handleSaveClick = () => {
+    const finalAmount = evaluateExpression(calcExpression);
+    if (!finalAmount || finalAmount <= 0) {
+      showToast("Please enter an amount greater than 0");
+      return;
+    }
+    if (!selectedCategory) {
+      showToast("Please select a category");
+      return;
+    }
+    const txToSave = {
+      id: initialTransaction ? initialTransaction.id : "tx-" + Date.now(),
+      userId: initialTransaction ? initialTransaction.userId : undefined,
+      type: mode,
+      // 'IN' or 'OUT'
+      categoryId: selectedCategory.id,
+      categoryName: selectedCategory.name,
+      amount: finalAmount,
+      date: date,
+      time: initialTransaction ? initialTransaction.time || "12:00 PM" : new Date().toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit'
+      }),
+      comment: comment.trim() || (mode === 'IN' ? `${selectedCategory.name} received` : `${selectedCategory.name} expense`),
+      attachments: attachments
+    };
+    onSave(txToSave, isEditing);
+  };
+
+  // Physical Keyboard Support: MAKE SAVE DATA ON ENTER
+  useEffect(() => {
+    const handleKeyDown = e => {
+      // If typing in input or textarea
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+        // Pressing Enter inside description/comment field saves transaction data immediately!
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleSaveClick();
+        }
+        return;
+      }
+      if (e.key >= '0' && e.key <= '9') {
+        handleKeyClick(e.key);
+      } else if (e.key === '.') {
+        handleKeyClick('.');
+      } else if (e.key === '+') {
+        handleKeyClick('+');
+      } else if (e.key === '-') {
+        handleKeyClick('-');
+      } else if (e.key === '*' || e.key === 'x' || e.key === 'X') {
+        handleKeyClick('×');
+      } else if (e.key === '/') {
+        handleKeyClick('÷');
+      } else if (e.key === '%') {
+        handleKeyClick('%');
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        // Pressing Enter on physical keyboard saves data!
+        handleSaveClick();
+      } else if (e.key === '=') {
+        e.preventDefault();
+        handleKeyClick('=');
+      } else if (e.key === 'Backspace') {
+        handleKeyClick('BACKSPACE');
+      } else if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') {
+        handleKeyClick('C');
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [calcExpression, amountStr, memoryValue, selectedCategory, comment, date, attachments]);
+
+  // ON ADD PHOTO: OPEN CAMERA
+  const handleOpenPhotoCamera = () => {
+    if (attachments.length >= 4) {
+      showToast("Maximum 4 attachments allowed");
+      return;
+    }
+    // Open camera modal with live viewfinder & mobile camera trigger
+    setShowLiveCamera(true);
+  };
+
+  // Handle Photo captured from live camera modal
+  const handleCaptureLiveCamera = (dataUrl, snapName) => {
+    if (attachments.length >= 4) {
+      showToast("Maximum 4 attachments allowed");
+      return;
+    }
+    const newAtt = {
+      id: "att-" + Date.now(),
+      name: snapName || `Camera_Bill_${new Date().toISOString().slice(0, 10)}.jpg`,
+      type: "photo",
+      size: "350 KB",
+      preview: dataUrl
+    };
+    setAttachments(prev => [...prev, newAtt]);
+    showToast(`✓ Camera photo captured & attached!`);
+    setShowLiveCamera(false);
+  };
+
+  // Handle Photo selected via file picker / mobile native camera
+  const handlePhotoFileChange = e => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (attachments.length >= 4) {
+      showToast("Maximum 4 attachments allowed");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = loadEvt => {
+      const sizeStr = file.size ? `${(file.size / 1024).toFixed(0)} KB` : "420 KB";
+      const newAtt = {
+        id: "att-" + Date.now(),
+        name: file.name || `Camera_Photo_${new Date().toISOString().slice(0, 10)}.jpg`,
+        type: "photo",
+        size: sizeStr,
+        preview: loadEvt.target.result
+      };
+      setAttachments(prev => [...prev, newAtt]);
+      showToast(`✓ Photo attached: ${newAtt.name}`);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  // ON ADD PDF: OPEN FILE EXPLORER FOR ATTACHED FILE
+  const handleOpenPdfExplorer = () => {
+    if (attachments.length >= 4) {
+      showToast("Maximum 4 attachments allowed");
+      return;
+    }
+    // Triggers OS File Explorer dialog specifically for PDF files
+    if (pdfInputRef.current) {
+      pdfInputRef.current.click();
+    }
+  };
+
+  // Handle PDF selected via File Explorer
+  const handlePdfFileChange = e => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (attachments.length >= 4) {
+      showToast("Maximum 4 attachments allowed");
+      return;
+    }
+    const sizeStr = file.size ? `${(file.size / 1024).toFixed(0)} KB` : "620 KB";
+    const newAtt = {
+      id: "att-" + Date.now(),
+      name: file.name,
+      type: "pdf",
+      size: sizeStr
+    };
+    setAttachments(prev => [...prev, newAtt]);
+    showToast(`✓ Attached PDF: ${file.name}`);
+    e.target.value = '';
+  };
+  const removeAttachment = index => {
+    setAttachments(attachments.filter((_, i) => i !== index));
+  };
+
+  // Filter categories by search
+  const filteredCategories = useMemo(() => {
+    if (!categorySearch.trim()) return categories;
+    return categories.filter(c => c.name.toLowerCase().includes(categorySearch.toLowerCase().trim()));
+  }, [categories, categorySearch]);
+  const exactCategoryMatch = useMemo(() => {
+    return categories.some(c => c.name.toLowerCase() === categorySearch.toLowerCase().trim());
+  }, [categories, categorySearch]);
+
+  // Handle inline category creation
+  const handleCreateInlineCategory = () => {
+    if (!categorySearch.trim()) return;
+    const newCat = {
+      id: `${mode.toLowerCase()}-${Date.now()}`,
+      name: categorySearch.trim(),
+      icon: mode === 'IN' ? 'wallet' : 'shopping-cart',
+      color: mode === 'IN' ? '#059669' : '#DC2626',
+      group: mode === 'IN' ? 'Secondary Income' : 'Personal'
+    };
+    onAddCategory(newCat, mode);
+    setSelectedCategory(newCat);
+    setIsCategoryPickerOpen(false);
+    setCategorySearch("");
+    showToast(`Created & selected "${newCat.name}"`);
+  };
+
+  // Header Title matching screenshot
+  const headerActionText = mode === 'OUT' ? 'You gave' : 'You received';
+  const headerPreposition = mode === 'OUT' ? 'to' : 'from';
+  const categoryDisplayName = selectedCategory ? selectedCategory.name.toLowerCase() : mode === 'OUT' ? 'home expense' : 'income';
+  const displayAmount = evaluateExpression(calcExpression);
+
+  // Is widescreen desktop mode
+  const isDesktop = deviceMode === 'desktop';
+
+  // Calculator Keypad JSX (Shared across mobile, tablet, and desktop)
+  const CalculatorKeypad = /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-4 gap-1.5 text-slate-800 font-bold select-none text-base"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('C'),
+    className: "h-10 md:h-11 rounded-lg bg-[#D4E4F7] hover:bg-[#c4daf3] active:bg-[#b0cdf0] text-slate-800 flex items-center justify-center font-bold text-sm shadow-xs transition"
+  }, "C"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('M+'),
+    className: "h-10 md:h-11 rounded-lg bg-[#D4E4F7] hover:bg-[#c4daf3] active:bg-[#b0cdf0] text-slate-800 flex items-center justify-center font-bold text-sm shadow-xs transition"
+  }, "M+"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('M-'),
+    className: "h-10 md:h-11 rounded-lg bg-[#D4E4F7] hover:bg-[#c4daf3] active:bg-[#b0cdf0] text-slate-800 flex items-center justify-center font-bold text-sm shadow-xs transition"
+  }, "M-"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('BACKSPACE'),
+    className: "h-10 md:h-11 rounded-lg bg-[#D4E4F7] hover:bg-[#c4daf3] active:bg-[#b0cdf0] text-slate-800 flex items-center justify-center shadow-xs transition",
+    title: "Backspace"
+  }, window.getIconComponent('backspace', {
+    size: 18
+  })), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('7'),
+    className: "h-10 md:h-11 rounded-lg bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-900 flex items-center justify-center font-bold text-base shadow-xs transition"
+  }, "7"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('8'),
+    className: "h-10 md:h-11 rounded-lg bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-900 flex items-center justify-center font-bold text-base shadow-xs transition"
+  }, "8"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('9'),
+    className: "h-10 md:h-11 rounded-lg bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-900 flex items-center justify-center font-bold text-base shadow-xs transition"
+  }, "9"), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-1"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('÷'),
+    className: "h-10 md:h-11 rounded-lg bg-[#D4E4F7] hover:bg-[#c4daf3] active:bg-[#b0cdf0] text-slate-800 flex items-center justify-center font-bold text-sm shadow-xs transition"
+  }, "\xF7"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('%'),
+    className: "h-10 md:h-11 rounded-lg bg-[#D4E4F7] hover:bg-[#c4daf3] active:bg-[#b0cdf0] text-slate-800 flex items-center justify-center font-bold text-xs shadow-xs transition"
+  }, "%")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('4'),
+    className: "h-10 md:h-11 rounded-lg bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-900 flex items-center justify-center font-bold text-base shadow-xs transition"
+  }, "4"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('5'),
+    className: "h-10 md:h-11 rounded-lg bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-900 flex items-center justify-center font-bold text-base shadow-xs transition"
+  }, "5"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('6'),
+    className: "h-10 md:h-11 rounded-lg bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-900 flex items-center justify-center font-bold text-base shadow-xs transition"
+  }, "6"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('×'),
+    className: "h-10 md:h-11 rounded-lg bg-[#D4E4F7] hover:bg-[#c4daf3] active:bg-[#b0cdf0] text-slate-800 flex items-center justify-center font-bold text-sm shadow-xs transition"
+  }, "\xD7"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('1'),
+    className: "h-10 md:h-11 rounded-lg bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-900 flex items-center justify-center font-bold text-base shadow-xs transition"
+  }, "1"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('2'),
+    className: "h-10 md:h-11 rounded-lg bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-900 flex items-center justify-center font-bold text-base shadow-xs transition"
+  }, "2"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('3'),
+    className: "h-10 md:h-11 rounded-lg bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-900 flex items-center justify-center font-bold text-base shadow-xs transition"
+  }, "3"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('-'),
+    className: "h-10 md:h-11 rounded-lg bg-[#0C5BA6] hover:bg-[#0a4d8d] active:bg-[#083e72] text-white flex items-center justify-center font-bold text-lg shadow-xs transition"
+  }, "-"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('0'),
+    className: "h-10 md:h-11 rounded-lg bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-900 flex items-center justify-center font-bold text-base shadow-xs transition"
+  }, "0"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('.'),
+    className: "h-10 md:h-11 rounded-lg bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-900 flex items-center justify-center font-bold text-base shadow-xs transition"
+  }, "."), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('='),
+    className: "h-10 md:h-11 rounded-lg bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-900 flex items-center justify-center font-bold text-base shadow-xs transition"
+  }, "="), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleKeyClick('+'),
+    className: "h-10 md:h-11 rounded-lg bg-[#0C5BA6] hover:bg-[#0a4d8d] active:bg-[#083e72] text-white flex items-center justify-center font-bold text-lg shadow-xs transition"
+  }, "+"));
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col h-full bg-[#FAFAFA] select-none relative font-sans text-slate-800"
+  }, toastMessage && /*#__PURE__*/React.createElement("div", {
+    className: "absolute top-14 left-1/2 -translate-x-1/2 z-50 bg-slate-900/90 text-white text-xs font-semibold px-4 py-2 rounded-full shadow-lg backdrop-blur animate-fade-in flex items-center space-x-2"
+  }, /*#__PURE__*/React.createElement("span", null, toastMessage)), /*#__PURE__*/React.createElement("div", {
+    className: "sticky top-0 z-30 bg-white border-b border-slate-100 px-4 py-3.5 flex items-center justify-between shadow-xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center flex-1 overflow-hidden"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: onBack,
+    className: "p-1 -ml-1 text-[#9B111E] active:opacity-70 transition hover:bg-red-50 rounded-full shrink-0",
+    title: "Back to Cash Book"
+  }, window.getIconComponent('arrow-left', {
+    size: 24,
+    className: 'stroke-[2.5]'
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "ml-3 flex-1 overflow-hidden pr-2"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setIsCategoryPickerOpen(true),
+    className: "text-left w-full group flex items-center space-x-1.5 focus:outline-hidden"
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "text-lg md:text-xl font-extrabold italic text-[#9B111E] tracking-tight truncate leading-tight"
+  }, headerActionText, " \u20B9 ", displayAmount, " ", headerPreposition, " ", /*#__PURE__*/React.createElement("span", {
+    className: "underline decoration-dotted underline-offset-4 group-hover:text-red-700"
+  }, categoryDisplayName)), /*#__PURE__*/React.createElement("span", {
+    className: "text-[#9B111E] opacity-60 text-xs"
+  }, "\u25BC")))), isDesktop && /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full shrink-0 hidden md:inline-block"
+  }, "Keyboard enabled (0-9, +, -, *, /, Enter)")), isDesktop ?
+  /*#__PURE__*/
+  // DESKTOP DUAL-COLUMN LAYOUT
+  React.createElement("div", {
+    className: "flex-1 overflow-y-auto p-6 grid grid-cols-12 gap-6 max-w-5xl mx-auto w-full items-start"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "col-span-7 space-y-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs relative"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1"
+  }, "Transaction Amount"), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-3xl font-extrabold italic text-[#9B111E]"
+  }, "\u20B9"), /*#__PURE__*/React.createElement("span", {
+    className: "text-3xl md:text-4xl font-extrabold italic text-[#9B111E] tracking-tight"
+  }, calcExpression || "0")), calcExpression && calcExpression !== String(displayAmount) && /*#__PURE__*/React.createElement("div", {
+    className: "text-xs font-semibold text-slate-500 mt-1 italic"
+  }, "Calculated Total = \u20B9 ", displayAmount), /*#__PURE__*/React.createElement("div", {
+    className: "mt-4 pt-3 border-t border-slate-100 flex items-center justify-between"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-slate-400 font-medium"
+  }, "Category:"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setIsCategoryPickerOpen(true),
+    className: "inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-[#9B111E] hover:bg-red-100 transition"
+  }, selectedCategory && /*#__PURE__*/React.createElement("span", {
+    className: "w-2.5 h-2.5 rounded-full",
+    style: {
+      backgroundColor: selectedCategory.color || '#9B111E'
+    }
+  }), /*#__PURE__*/React.createElement("span", null, selectedCategory ? selectedCategory.name : "Select Category"), window.getIconComponent('chevron-down', {
+    size: 12
+  }))), /*#__PURE__*/React.createElement("span", {
+    className: `text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-sm ${mode === 'OUT' ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'}`
+  }, mode === 'OUT' ? 'Expense' : 'Income'))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-bold text-slate-500 block mb-1"
+  }, "Description / Notes"), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: comment,
+    onChange: e => setComment(e.target.value),
+    onKeyDown: e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleSaveClick();
+      }
+    },
+    placeholder: "Enter details (Items, bill no., quantity, etc.) \u2022 Press Enter to Save",
+    className: "w-full text-sm font-medium italic text-slate-700 placeholder:text-slate-400 placeholder:italic focus:outline-hidden bg-transparent"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs space-y-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-bold text-slate-500"
+  }, "Transaction Date"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setShowDatePickerModal(true),
+    className: "inline-flex items-center space-x-2 px-3 py-1.5 bg-slate-50 rounded-lg border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[#9B111E]"
+  }, window.getIconComponent('calendar', {
+    size: 14
+  })), /*#__PURE__*/React.createElement("span", null, window.formatDateDisplay(date)), /*#__PURE__*/React.createElement("span", {
+    className: "text-[#9B111E] text-[10px]"
+  }, "\u25BC"))), /*#__PURE__*/React.createElement("div", {
+    className: "pt-2 border-t border-slate-100 space-y-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between text-xs font-semibold text-slate-600"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "italic flex items-center space-x-1"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('paperclip', {
+    size: 14
+  })), /*#__PURE__*/React.createElement("span", null, "Attach bills (max 4)")), /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] text-slate-400"
+  }, attachments.length, "/4 attached")), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-2.5"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: handleOpenPhotoCamera,
+    disabled: attachments.length >= 4,
+    className: "flex-1 inline-flex items-center justify-center space-x-2 py-2 px-3 bg-slate-50 rounded-lg border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 transition active:scale-95",
+    title: "Open Camera to capture bill photo"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[#9B111E]"
+  }, window.getIconComponent('camera', {
+    size: 15
+  })), /*#__PURE__*/React.createElement("span", null, "Add photo (Camera)")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: handleOpenPdfExplorer,
+    disabled: attachments.length >= 4,
+    className: "flex-1 inline-flex items-center justify-center space-x-2 py-2 px-3 bg-slate-50 rounded-lg border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 transition active:scale-95",
+    title: "Open File Explorer to attach PDF"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[#9B111E]"
+  }, window.getIconComponent('file-text', {
+    size: 15
+  })), /*#__PURE__*/React.createElement("span", null, "Add PDF (Explorer)"))), attachments.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-2 pt-1"
+  }, attachments.map((att, idx) => /*#__PURE__*/React.createElement("div", {
+    key: idx,
+    className: "flex items-center justify-between p-2 bg-slate-50 rounded-lg border border-slate-200 text-xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-2 overflow-hidden pr-1"
+  }, att.preview ? /*#__PURE__*/React.createElement("img", {
+    src: att.preview,
+    alt: "",
+    className: "w-6 h-6 object-cover rounded-sm shrink-0 border border-slate-200"
+  }) : /*#__PURE__*/React.createElement("span", {
+    className: "text-[#9B111E] shrink-0"
+  }, att.type === 'pdf' ? window.getIconComponent('file-text', {
+    size: 14
+  }) : window.getIconComponent('camera', {
+    size: 14
+  })), /*#__PURE__*/React.createElement("span", {
+    className: "font-medium text-slate-700 truncate"
+  }, att.name)), /*#__PURE__*/React.createElement("button", {
+    onClick: () => removeAttachment(idx),
+    className: "p-1 text-slate-400 hover:text-red-600"
+  }, window.getIconComponent('x', {
+    size: 12
+  }))))))), /*#__PURE__*/React.createElement("button", {
+    onClick: handleSaveClick,
+    className: "w-full py-3.5 bg-[#9B111E] hover:bg-[#880b19] active:scale-[0.99] text-white font-extrabold italic text-base tracking-widest uppercase rounded-xl shadow-md transition flex items-center justify-center space-x-2"
+  }, /*#__PURE__*/React.createElement("span", null, isEditing ? 'UPDATE TRANSACTION' : 'SAVE TRANSACTION'))), /*#__PURE__*/React.createElement("div", {
+    className: "col-span-5 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between pb-2 border-b border-slate-100"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-extrabold text-slate-800 uppercase tracking-wider"
+  }, "Calculator Keypad"), /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] text-slate-400"
+  }, "Memory: \u20B9", memoryValue)), CalculatorKeypad, /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] text-slate-400 italic text-center pt-2"
+  }, "Tip: You can use your physical computer keyboard or the buttons above."))) :
+  /*#__PURE__*/
+  // MOBILE & TABLET VERTICAL STACKED LAYOUT (100% Matching Screenshot)
+  React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "flex-1 overflow-y-auto px-4 py-3 space-y-3.5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-xl border border-slate-200/90 p-4 shadow-2xs hover:border-slate-300 transition relative"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-2xl md:text-3xl font-extrabold italic text-[#9B111E]"
+  }, "\u20B9"), /*#__PURE__*/React.createElement("span", {
+    className: "text-2xl md:text-3xl font-extrabold italic text-[#9B111E] tracking-tight"
+  }, calcExpression || "0")), calcExpression && calcExpression !== String(displayAmount) && /*#__PURE__*/React.createElement("div", {
+    className: "text-xs font-medium text-slate-500 mt-1 italic"
+  }, "= \u20B9 ", displayAmount), /*#__PURE__*/React.createElement("div", {
+    className: "mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-slate-400 font-medium"
+  }, "Category:"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setIsCategoryPickerOpen(true),
+    className: "inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-50 text-[#9B111E] hover:bg-red-100 transition"
+  }, selectedCategory && /*#__PURE__*/React.createElement("span", {
+    className: "w-2 h-2 rounded-full",
+    style: {
+      backgroundColor: selectedCategory.color || '#9B111E'
+    }
+  }), /*#__PURE__*/React.createElement("span", null, selectedCategory ? selectedCategory.name : "Select Category"), window.getIconComponent('chevron-down', {
+    size: 12
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-1"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: `text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-sm ${mode === 'OUT' ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'}`
+  }, mode === 'OUT' ? 'Expense' : 'Income')))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-xl border border-slate-200/90 p-3.5 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: comment,
+    onChange: e => setComment(e.target.value),
+    onKeyDown: e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleSaveClick();
+      }
+    },
+    placeholder: "Enter details (Items, bill no., etc.) \u2022 Enter to Save",
+    className: "w-full text-sm font-medium italic text-slate-700 placeholder:text-slate-400 placeholder:italic focus:outline-hidden bg-transparent"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setShowDatePickerModal(true),
+    className: "inline-flex items-center space-x-2 px-3 py-2 bg-white rounded-lg border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 active:bg-slate-100 shadow-2xs transition"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[#9B111E]"
+  }, window.getIconComponent('calendar', {
+    size: 15
+  })), /*#__PURE__*/React.createElement("span", {
+    className: "tracking-wide"
+  }, window.formatDateDisplay(date)), /*#__PURE__*/React.createElement("span", {
+    className: "text-[#9B111E] text-[10px]"
+  }, "\u25BC"))), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2.5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-1.5 text-xs font-semibold text-slate-600"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-400"
+  }, window.getIconComponent('paperclip', {
+    size: 16
+  })), /*#__PURE__*/React.createElement("span", {
+    className: "italic"
+  }, "Attach bills (max 4)"), /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] text-slate-400 ml-1"
+  }, "(", attachments.length, "/4)")), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-2.5"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: handleOpenPhotoCamera,
+    disabled: attachments.length >= 4,
+    className: `flex-1 inline-flex items-center justify-center space-x-2 py-2 px-3 bg-white rounded-lg border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 active:bg-slate-100 shadow-2xs transition active:scale-95 ${attachments.length >= 4 ? 'opacity-50 cursor-not-allowed' : ''}`,
+    title: "Open Camera to snap bill"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[#9B111E]"
+  }, window.getIconComponent('camera', {
+    size: 16
+  })), /*#__PURE__*/React.createElement("span", null, "Add photo (Camera)")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: handleOpenPdfExplorer,
+    disabled: attachments.length >= 4,
+    className: `flex-1 inline-flex items-center justify-center space-x-2 py-2 px-3 bg-white rounded-lg border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 active:bg-slate-100 shadow-2xs transition active:scale-95 ${attachments.length >= 4 ? 'opacity-50 cursor-not-allowed' : ''}`,
+    title: "Open File Explorer for PDF"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[#9B111E]"
+  }, window.getIconComponent('file-text', {
+    size: 16
+  })), /*#__PURE__*/React.createElement("span", null, "Add PDF (Explorer)"))), attachments.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-2 pt-1"
+  }, attachments.map((att, idx) => /*#__PURE__*/React.createElement("div", {
+    key: idx,
+    className: "flex items-center justify-between p-2 bg-white rounded-lg border border-slate-200 text-xs shadow-2xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-1.5 overflow-hidden pr-1"
+  }, att.preview ? /*#__PURE__*/React.createElement("img", {
+    src: att.preview,
+    alt: "",
+    className: "w-5 h-5 object-cover rounded-sm shrink-0 border border-slate-200"
+  }) : /*#__PURE__*/React.createElement("span", {
+    className: "text-[#9B111E] shrink-0"
+  }, att.type === 'pdf' ? window.getIconComponent('file-text', {
+    size: 14
+  }) : window.getIconComponent('camera', {
+    size: 14
+  })), /*#__PURE__*/React.createElement("span", {
+    className: "font-medium text-slate-700 truncate"
+  }, att.name)), /*#__PURE__*/React.createElement("button", {
+    onClick: () => removeAttachment(idx),
+    className: "p-1 text-slate-400 hover:text-red-600 rounded-full hover:bg-red-50 shrink-0",
+    title: "Remove attachment"
+  }, window.getIconComponent('x', {
+    size: 14
+  }))))))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-[#EDF2F7] border-t border-slate-200/80 p-2 space-y-2 shrink-0 shadow-lg"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: handleSaveClick,
+    className: "w-full py-3 bg-[#9B111E] hover:bg-[#880b19] active:bg-[#730814] text-white font-extrabold italic text-sm tracking-widest uppercase rounded-lg shadow-md transition active:scale-[0.99] flex items-center justify-center space-x-1.5"
+  }, /*#__PURE__*/React.createElement("span", null, isEditing ? 'UPDATE TRANSACTION' : 'SAVE')), CalculatorKeypad)), isCategoryPickerOpen && /*#__PURE__*/React.createElement("div", {
+    className: "absolute inset-0 z-50 bg-black/50 backdrop-blur-xs flex flex-col justify-end"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-t-2xl max-h-[85vh] flex flex-col shadow-2xl animate-slide-up"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "p-4 border-b border-slate-100 flex items-center justify-between"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "font-extrabold text-slate-900 text-base"
+  }, "Select ", mode === 'OUT' ? 'Expense' : 'Income', " Category"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500"
+  }, "Search existing or create a new category inline")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setIsCategoryPickerOpen(false);
+      setCategorySearch("");
+    },
+    className: "p-1.5 text-slate-400 hover:text-slate-700 rounded-full hover:bg-slate-100"
+  }, window.getIconComponent('x', {
+    size: 20
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "p-3 bg-slate-50 border-b border-slate-100"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "relative"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+  }, window.getIconComponent('search', {
+    size: 16
+  })), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: categorySearch,
+    onChange: e => setCategorySearch(e.target.value),
+    placeholder: `Search ${mode === 'OUT' ? 'expense' : 'income'} categories...`,
+    className: "w-full pl-9 pr-3 py-2 bg-white rounded-lg border border-slate-200 text-sm focus:outline-hidden focus:ring-2 focus:ring-[#9B111E]",
+    autoFocus: true
+  })), categorySearch.trim() && !exactCategoryMatch && /*#__PURE__*/React.createElement("button", {
+    onClick: handleCreateInlineCategory,
+    className: "mt-2 w-full flex items-center justify-center space-x-2 py-2 px-3 bg-red-50 hover:bg-red-100 text-[#9B111E] rounded-lg text-xs font-bold transition"
+  }, window.getIconComponent('plus', {
+    size: 14
+  }), /*#__PURE__*/React.createElement("span", null, "Add \"", categorySearch.trim(), "\" as new category"))), /*#__PURE__*/React.createElement("div", {
+    className: "overflow-y-auto p-3 space-y-2 flex-1"
+  }, filteredCategories.length === 0 ? /*#__PURE__*/React.createElement("div", {
+    className: "text-center py-6 text-slate-400 text-sm"
+  }, "No categories found. Tap \"+ Add\" above to create it!") : /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-2"
+  }, filteredCategories.map(cat => {
+    const isSelected = selectedCategory && selectedCategory.id === cat.id;
+    return /*#__PURE__*/React.createElement("button", {
+      key: cat.id,
+      onClick: () => {
+        setSelectedCategory(cat);
+        setIsCategoryPickerOpen(false);
+        setCategorySearch("");
+      },
+      className: `flex items-center space-x-2.5 p-2.5 rounded-xl border text-left transition ${isSelected ? 'border-[#9B111E] bg-red-50/60 ring-1 ring-[#9B111E]' : 'border-slate-200 hover:border-slate-300 bg-white'}`
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0 shadow-2xs",
+      style: {
+        backgroundColor: cat.color || '#9B111E'
+      }
+    }, window.getIconComponent(cat.icon || 'tags', {
+      size: 16
+    })), /*#__PURE__*/React.createElement("div", {
+      className: "overflow-hidden"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: `text-xs font-bold truncate ${isSelected ? 'text-[#9B111E]' : 'text-slate-800'}`
+    }, cat.name), /*#__PURE__*/React.createElement("p", {
+      className: "text-[10px] text-slate-400 truncate"
+    }, cat.group || 'General')));
+  }))))), showDatePickerModal && /*#__PURE__*/React.createElement("div", {
+    className: "absolute inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-5 max-w-xs w-full shadow-2xl animate-scale-in"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "font-extrabold text-slate-900 text-sm mb-3"
+  }, "Select Transaction Date"), /*#__PURE__*/React.createElement("input", {
+    type: "date",
+    value: date,
+    onChange: e => setDate(e.target.value),
+    className: "w-full p-2.5 border border-slate-200 rounded-lg text-sm font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#9B111E] mb-4"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "flex space-x-2"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setDate("2026-11-07");
+      setShowDatePickerModal(false);
+    },
+    className: "flex-1 py-1.5 px-3 bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 rounded-lg"
+  }, "Today (07 Nov)"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setShowDatePickerModal(false),
+    className: "flex-1 py-1.5 px-3 bg-[#9B111E] hover:bg-[#880b19] text-xs font-bold text-white rounded-lg"
+  }, "Done")))), /*#__PURE__*/React.createElement("input", {
+    type: "file",
+    ref: photoInputRef,
+    accept: "image/*",
+    capture: "environment",
+    onChange: handlePhotoFileChange,
+    className: "hidden"
+  }), /*#__PURE__*/React.createElement("input", {
+    type: "file",
+    ref: pdfInputRef,
+    accept: ".pdf,application/pdf",
+    onChange: handlePdfFileChange,
+    className: "hidden"
+  }), showLiveCamera && /*#__PURE__*/React.createElement(window.LiveCameraModal, {
+    onCapture: handleCaptureLiveCamera,
+    onClose: () => setShowLiveCamera(false),
+    onOpenDeviceFilePicker: () => {
+      setShowLiveCamera(false);
+      if (photoInputRef.current) photoInputRef.current.click();
+    }
+  }));
+};
+
+// ===== FILE: src/views.js =====
+// Main Views for Personal Finance Management Tool:
+// Dashboard, CashBook Overview, Reports, Categories Management, and Profile / Settings
+
+// ============================================================================
+// 2. CASH BOOK OVERVIEW SCREEN
+// ============================================================================
+window.CashBookOverview = function ({
+  transactions,
+  onOpenEntry,
+  onDeleteTransaction,
+  onEditTransaction,
+  currency = "₹"
+}) {
+  const [filterType, setFilterType] = useState('ALL'); // 'ALL' | 'IN' | 'OUT'
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTxForDetail, setSelectedTxForDetail] = useState(null);
+
+  // Month summary for November 2026
+  const currentMonthStats = useMemo(() => {
+    let totalIn = 0;
+    let totalOut = 0;
+    transactions.forEach(tx => {
+      // consider Nov 2026
+      if (tx.date.startsWith('2026-11')) {
+        if (tx.type === 'IN') totalIn += Number(tx.amount);
+        if (tx.type === 'OUT') totalOut += Number(tx.amount);
+      }
+    });
+    return {
+      totalIn,
+      totalOut,
+      netBalance: totalIn - totalOut
+    };
+  }, [transactions]);
+
+  // Filtered transactions sorted chronologically (newest first)
+  const filteredList = useMemo(() => {
+    return transactions.filter(tx => {
+      if (filterType !== 'ALL' && tx.type !== filterType) return false;
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const matchCat = tx.categoryName.toLowerCase().includes(q);
+        const matchComment = tx.comment ? tx.comment.toLowerCase().includes(q) : false;
+        const matchAmount = String(tx.amount).includes(q);
+        return matchCat || matchComment || matchAmount;
+      }
+      return true;
+    }).sort((a, b) => new Date(b.date) - new Date(a.date));
+  }, [transactions, filterType, searchQuery]);
+
+  // Compute running balance starting from baseline
+  const listWithRunningBalance = useMemo(() => {
+    // Sort oldest first to compute cumulative
+    const sortedOldest = [...transactions].sort((a, b) => new Date(a.date) - new Date(b.date));
+    let running = 0;
+    const balanceMap = {};
+    sortedOldest.forEach(tx => {
+      if (tx.type === 'IN') running += Number(tx.amount);else running -= Number(tx.amount);
+      balanceMap[tx.id] = running;
+    });
+    return filteredList.map(tx => ({
+      ...tx,
+      runningBalance: balanceMap[tx.id] || 0
+    }));
+  }, [filteredList, transactions]);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col h-full bg-[#F8F9FA] overflow-y-auto"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-gradient-to-r from-[#9B111E] to-[#7B0D18] text-white p-4 shadow-md"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-2"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] uppercase tracking-wider font-semibold opacity-80"
+  }, "Cash Book \u2022 November 2026"), /*#__PURE__*/React.createElement("h2", {
+    className: "text-xl font-extrabold tracking-tight"
+  }, "Daily Cash & Bank Ledger")), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs px-2.5 py-1 bg-white/20 backdrop-blur rounded-full font-bold"
+  }, transactions.length, " entries")), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-white/20 text-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-black/15 p-2 rounded-lg"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-emerald-200 font-medium uppercase"
+  }, "Total IN"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs md:text-sm font-extrabold text-emerald-300 truncate"
+  }, "+", window.formatCurrency(currentMonthStats.totalIn, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-black/15 p-2 rounded-lg"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-red-200 font-medium uppercase"
+  }, "Total OUT"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs md:text-sm font-extrabold text-red-300 truncate"
+  }, "-", window.formatCurrency(currentMonthStats.totalOut, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-black/15 p-2 rounded-lg"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-sky-200 font-medium uppercase"
+  }, "Net Balance"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs md:text-sm font-extrabold text-white truncate"
+  }, window.formatCurrency(currentMonthStats.netBalance, currency))))), /*#__PURE__*/React.createElement("div", {
+    className: "p-4 space-y-4 flex-1"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-3.5"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => onOpenEntry('IN'),
+    className: "group relative overflow-hidden bg-white hover:bg-emerald-50/50 active:scale-[0.98] border-2 border-emerald-500 rounded-2xl p-4 text-left shadow-md hover:shadow-lg transition-all duration-200"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-extrabold text-lg shadow-2xs group-hover:bg-emerald-600 group-hover:text-white transition"
+  }, "+"), /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800"
+  }, "Income")), /*#__PURE__*/React.createElement("h3", {
+    className: "text-base font-extrabold text-slate-900 group-hover:text-emerald-700 transition"
+  }, "IN"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-semibold text-emerald-700 mt-0.5"
+  }, "Money Received"), /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] text-slate-400 mt-1 line-clamp-1"
+  }, "Salary, Bonus, Freelancing, Gifts")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => onOpenEntry('OUT'),
+    className: "group relative overflow-hidden bg-white hover:bg-red-50/50 active:scale-[0.98] border-2 border-[#9B111E] rounded-2xl p-4 text-left shadow-md hover:shadow-lg transition-all duration-200"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "w-10 h-10 rounded-xl bg-red-100 text-[#9B111E] flex items-center justify-center font-extrabold text-lg shadow-2xs group-hover:bg-[#9B111E] group-hover:text-white transition"
+  }, "-"), /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-red-100 text-red-800"
+  }, "Expense")), /*#__PURE__*/React.createElement("h3", {
+    className: "text-base font-extrabold text-slate-900 group-hover:text-[#9B111E] transition"
+  }, "OUT"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-semibold text-[#9B111E] mt-0.5"
+  }, "Money Spent"), /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] text-slate-400 mt-1 line-clamp-1"
+  }, "Rent, EMI, Food, Bills, Fuel"))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-xl p-3 border border-slate-200/90 shadow-2xs space-y-2.5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "relative"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+  }, window.getIconComponent('search', {
+    size: 16
+  })), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: searchQuery,
+    onChange: e => setSearchQuery(e.target.value),
+    placeholder: "Search category, details, amount...",
+    className: "w-full pl-9 pr-3 py-1.5 bg-slate-50 rounded-lg text-xs font-medium border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-[#9B111E]"
+  }), searchQuery && /*#__PURE__*/React.createElement("button", {
+    onClick: () => setSearchQuery(''),
+    className: "absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+  }, window.getIconComponent('x', {
+    size: 14
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-1.5"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setFilterType('ALL'),
+    className: `px-3 py-1 rounded-full text-xs font-bold transition ${filterType === 'ALL' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`
+  }, "All (", transactions.length, ")"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setFilterType('IN'),
+    className: `px-3 py-1 rounded-full text-xs font-bold transition ${filterType === 'IN' ? 'bg-emerald-600 text-white' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'}`
+  }, "IN Only"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setFilterType('OUT'),
+    className: `px-3 py-1 rounded-full text-xs font-bold transition ${filterType === 'OUT' ? 'bg-[#9B111E] text-white' : 'bg-red-50 text-[#9B111E] hover:bg-red-100'}`
+  }, "OUT Only"))), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider px-1"
+  }, /*#__PURE__*/React.createElement("span", null, "Transaction Ledger"), /*#__PURE__*/React.createElement("span", null, listWithRunningBalance.length, " Records")), listWithRunningBalance.length === 0 ? /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-xl p-8 text-center border border-slate-200"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-12 h-12 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-2"
+  }, window.getIconComponent('book-open', {
+    size: 24
+  })), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm font-bold text-slate-700"
+  }, "No transactions match your filter"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-400 mt-1"
+  }, "Try changing filters or record an IN/OUT entry above.")) : /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2"
+  }, listWithRunningBalance.map(tx => {
+    const isIncome = tx.type === 'IN';
+    return /*#__PURE__*/React.createElement("div", {
+      key: tx.id,
+      onClick: () => setSelectedTxForDetail(tx),
+      className: "bg-white rounded-xl p-3 border border-slate-200/90 shadow-2xs hover:shadow-xs hover:border-slate-300 transition cursor-pointer flex items-center justify-between"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center space-x-3 overflow-hidden pr-2"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: `w-10 h-10 rounded-xl flex items-center justify-center font-extrabold text-sm shrink-0 ${isIncome ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-[#9B111E]'}`
+    }, isIncome ? 'IN' : 'OUT'), /*#__PURE__*/React.createElement("div", {
+      className: "overflow-hidden"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center space-x-1.5"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: "text-xs md:text-sm font-bold text-slate-900 truncate"
+    }, tx.categoryName), tx.attachments && tx.attachments.length > 0 && /*#__PURE__*/React.createElement("span", {
+      className: "text-slate-400 shrink-0",
+      title: `${tx.attachments.length} attachment(s)`
+    }, window.getIconComponent('paperclip', {
+      size: 12
+    }))), /*#__PURE__*/React.createElement("p", {
+      className: "text-[11px] text-slate-500 truncate mt-0.5"
+    }, tx.comment || `${tx.categoryName} entry`), /*#__PURE__*/React.createElement("p", {
+      className: "text-[10px] text-slate-400 mt-0.5"
+    }, window.formatDateDisplay(tx.date), " ", tx.time ? `• ${tx.time}` : ''))), /*#__PURE__*/React.createElement("div", {
+      className: "text-right shrink-0"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: `text-sm md:text-base font-extrabold italic tracking-tight ${isIncome ? 'text-emerald-600' : 'text-[#9B111E]'}`
+    }, isIncome ? '+' : '-', window.formatCurrency(tx.amount, currency)), /*#__PURE__*/React.createElement("p", {
+      className: "text-[10px] text-slate-400 font-medium mt-0.5"
+    }, "Bal: ", window.formatCurrency(tx.runningBalance, currency))));
+  })))), selectedTxForDetail && /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl animate-scale-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between border-b border-slate-100 pb-3"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: `px-2.5 py-1 rounded-full text-xs font-bold uppercase ${selectedTxForDetail.type === 'IN' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}`
+  }, selectedTxForDetail.type === 'IN' ? 'Money Received (IN)' : 'Money Spent (OUT)'), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setSelectedTxForDetail(null),
+    className: "p-1 text-slate-400 hover:text-slate-600 rounded-full"
+  }, window.getIconComponent('x', {
+    size: 18
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "py-4 text-center"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-400 uppercase tracking-wider font-semibold"
+  }, "Transaction Amount"), /*#__PURE__*/React.createElement("h2", {
+    className: `text-3xl font-extrabold italic tracking-tight my-1 ${selectedTxForDetail.type === 'IN' ? 'text-emerald-600' : 'text-[#9B111E]'}`
+  }, selectedTxForDetail.type === 'IN' ? '+' : '-', window.formatCurrency(selectedTxForDetail.amount, currency)), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm font-bold text-slate-800"
+  }, selectedTxForDetail.categoryName)), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200/80 mb-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-400"
+  }, "Date & Time"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-slate-700"
+  }, window.formatDateDisplay(selectedTxForDetail.date), " ", selectedTxForDetail.time || '')), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-400"
+  }, "Running Balance"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-slate-700"
+  }, window.formatCurrency(selectedTxForDetail.runningBalance, currency))), selectedTxForDetail.comment && /*#__PURE__*/React.createElement("div", {
+    className: "pt-2 border-t border-slate-200"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-400 block mb-0.5"
+  }, "Description / Details:"), /*#__PURE__*/React.createElement("span", {
+    className: "font-medium text-slate-800 italic"
+  }, selectedTxForDetail.comment))), selectedTxForDetail.attachments && selectedTxForDetail.attachments.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "mb-4"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-bold text-slate-600 mb-2 flex items-center space-x-1"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('paperclip', {
+    size: 14
+  })), /*#__PURE__*/React.createElement("span", null, "Attached Bills (", selectedTxForDetail.attachments.length, ")")), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-1.5"
+  }, selectedTxForDetail.attachments.map((att, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "flex items-center space-x-2 p-2 bg-slate-100 rounded-lg text-xs font-medium text-slate-700"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[#9B111E]"
+  }, att.type === 'pdf' ? window.getIconComponent('file-text', {
+    size: 14
+  }) : window.getIconComponent('camera', {
+    size: 14
+  })), /*#__PURE__*/React.createElement("span", {
+    className: "truncate flex-1"
+  }, att.name), /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] text-slate-400"
+  }, att.size))))), /*#__PURE__*/React.createElement("div", {
+    className: "flex space-x-2"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      if (onEditTransaction) onEditTransaction(selectedTxForDetail);
+      setSelectedTxForDetail(null);
+    },
+    className: "flex-1 py-2 px-3 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-1"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('edit', {
+    size: 14
+  })), /*#__PURE__*/React.createElement("span", null, "Edit")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      if (window.confirm("Delete this transaction?")) {
+        onDeleteTransaction(selectedTxForDetail.id);
+        setSelectedTxForDetail(null);
+      }
+    },
+    className: "flex-1 py-2 px-3 bg-red-50 hover:bg-red-100 text-[#9B111E] rounded-xl text-xs font-bold transition flex items-center justify-center space-x-1"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('trash', {
+    size: 14
+  })), /*#__PURE__*/React.createElement("span", null, "Delete")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setSelectedTxForDetail(null),
+    className: "py-2 px-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition"
+  }, "Close")))));
+};
+
+// ============================================================================
+// 3. DASHBOARD SCREEN
+// ============================================================================
+window.DashboardView = function ({
+  transactions,
+  userProfile,
+  onNavigateToCashBook,
+  currency = "₹"
+}) {
+  const [dateFilter, setDateFilter] = useState('thisMonth'); // 'thisMonth' | 'lastMonth' | 'last3Months' | 'thisYear' | 'custom'
+
+  // Filter transactions based on date filter
+  const filteredTxs = useMemo(() => {
+    return transactions.filter(tx => {
+      if (dateFilter === 'thisMonth') return tx.date.startsWith('2026-11');
+      if (dateFilter === 'lastMonth') return tx.date.startsWith('2026-10');
+      if (dateFilter === 'last3Months') return tx.date >= '2026-09-01';
+      if (dateFilter === 'thisYear') return tx.date.startsWith('2026');
+      return true;
+    });
+  }, [transactions, dateFilter]);
+
+  // Calculations
+  const stats = useMemo(() => {
+    let income = 0;
+    let expense = 0;
+    const catMap = {};
+    filteredTxs.forEach(tx => {
+      const amt = Number(tx.amount) || 0;
+      if (tx.type === 'IN') {
+        income += amt;
+      } else {
+        expense += amt;
+        catMap[tx.categoryName] = (catMap[tx.categoryName] || 0) + amt;
+      }
+    });
+    const balance = income - expense;
+    const savings = Math.max(0, balance);
+    const savingsPercentage = income > 0 ? Math.round(savings / income * 100) : 0;
+
+    // Find highest spending category
+    let highestCat = {
+      name: "None",
+      amount: 0,
+      percentage: 0
+    };
+    Object.keys(catMap).forEach(cat => {
+      if (catMap[cat] > highestCat.amount) {
+        highestCat = {
+          name: cat,
+          amount: catMap[cat],
+          percentage: expense > 0 ? Math.round(catMap[cat] / expense * 100) : 0
+        };
+      }
+    });
+
+    // Breakdown list sorted
+    const categoryBreakdown = Object.keys(catMap).map(cat => ({
+      name: cat,
+      amount: catMap[cat],
+      percentage: expense > 0 ? Math.round(catMap[cat] / expense * 100) : 0
+    })).sort((a, b) => b.amount - a.amount);
+    return {
+      income,
+      expense,
+      balance,
+      savings,
+      savingsPercentage,
+      highestCat,
+      categoryBreakdown
+    };
+  }, [filteredTxs]);
+
+  // Recent 5 transactions
+  const recentTransactions = useMemo(() => {
+    return [...filteredTxs].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+  }, [filteredTxs]);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col h-full bg-[#F8F9FA] overflow-y-auto"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white border-b border-slate-200/80 px-4 py-3.5 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-2.5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-10 h-10 rounded-full bg-[#9B111E] text-white flex items-center justify-center font-extrabold text-sm shadow-xs"
+  }, userProfile.name ? userProfile.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'U'), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-1.5"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-sm font-extrabold text-slate-900"
+  }, userProfile.name), /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700"
+  }, "Salaried Professional")), /*#__PURE__*/React.createElement("div", {
+    className: "text-[11px] text-slate-400 flex flex-wrap items-center gap-x-2 mt-0.5"
+  }, /*#__PURE__*/React.createElement(window.SalaryPrivacyViewer, {
+    amount: userProfile.monthlySalary,
+    currency: currency,
+    currentUser: userProfile,
+    label: "Monthly Net Salary",
+    size: "normal"
+  }), /*#__PURE__*/React.createElement("span", null, "\u2022 Payday: ", userProfile.payDay || 1, "st")))), /*#__PURE__*/React.createElement("button", {
+    onClick: () => onNavigateToCashBook('OUT'),
+    className: "px-3 py-1.5 bg-[#9B111E] hover:bg-[#880b19] active:scale-95 text-white rounded-lg text-xs font-bold shadow-xs transition flex items-center space-x-1"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('plus', {
+    size: 14
+  })), /*#__PURE__*/React.createElement("span", null, "Record"))), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-1.5 mt-3 pt-3 border-t border-slate-100 overflow-x-auto no-scrollbar"
+  }, [{
+    id: 'thisMonth',
+    label: 'This Month'
+  }, {
+    id: 'lastMonth',
+    label: 'Last Month'
+  }, {
+    id: 'last3Months',
+    label: 'Last 3 Months'
+  }, {
+    id: 'thisYear',
+    label: 'This Year'
+  }, {
+    id: 'all',
+    label: 'All Time'
+  }].map(tab => /*#__PURE__*/React.createElement("button", {
+    key: tab.id,
+    onClick: () => setDateFilter(tab.id),
+    className: `px-3 py-1 rounded-full text-xs font-bold shrink-0 transition ${dateFilter === tab.id ? 'bg-[#9B111E] text-white shadow-2xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`
+  }, tab.label)))), /*#__PURE__*/React.createElement("div", {
+    className: "p-4 space-y-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-1.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] font-bold text-slate-500 uppercase tracking-wider"
+  }, "Total Income"), /*#__PURE__*/React.createElement("span", {
+    className: "w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center"
+  }, window.getIconComponent('trending-up', {
+    size: 14
+  }))), /*#__PURE__*/React.createElement("p", {
+    className: "text-lg md:text-xl font-extrabold text-emerald-600 tracking-tight"
+  }, window.formatCurrency(stats.income, currency)), /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-slate-400 mt-1"
+  }, "Salary & secondary credits")), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-1.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] font-bold text-slate-500 uppercase tracking-wider"
+  }, "Total Expenses"), /*#__PURE__*/React.createElement("span", {
+    className: "w-7 h-7 rounded-lg bg-red-100 text-[#9B111E] flex items-center justify-center"
+  }, window.getIconComponent('trending-down', {
+    size: 14
+  }))), /*#__PURE__*/React.createElement("p", {
+    className: "text-lg md:text-xl font-extrabold text-[#9B111E] tracking-tight"
+  }, window.formatCurrency(stats.expense, currency)), /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-slate-400 mt-1"
+  }, "Rent, EMI, Food & Bills")), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-1.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] font-bold text-slate-500 uppercase tracking-wider"
+  }, "Available Balance"), /*#__PURE__*/React.createElement("span", {
+    className: "w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center"
+  }, window.getIconComponent('wallet', {
+    size: 14
+  }))), /*#__PURE__*/React.createElement("p", {
+    className: "text-lg md:text-xl font-extrabold text-slate-900 tracking-tight"
+  }, window.formatCurrency(stats.balance, currency)), /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-slate-400 mt-1"
+  }, "Cash in hand & bank balance")), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-1.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] font-bold text-slate-500 uppercase tracking-wider"
+  }, "Total Savings"), /*#__PURE__*/React.createElement("span", {
+    className: "w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center"
+  }, window.getIconComponent('piggy-bank', {
+    size: 14
+  }))), /*#__PURE__*/React.createElement("p", {
+    className: "text-lg md:text-xl font-extrabold text-emerald-700 tracking-tight"
+  }, window.formatCurrency(stats.savings, currency)), /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-slate-400 mt-1"
+  }, "Surplus after monthly expenses")), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs col-span-2 sm:col-span-1"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-1.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] font-bold text-slate-500 uppercase tracking-wider"
+  }, "Savings Rate"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-extrabold text-emerald-700 px-2 py-0.5 rounded-full bg-emerald-100"
+  }, stats.savingsPercentage, "%")), /*#__PURE__*/React.createElement("div", {
+    className: "w-full bg-slate-100 rounded-full h-2.5 mt-2 overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-emerald-500 h-2.5 rounded-full transition-all duration-500",
+    style: {
+      width: `${Math.min(100, stats.savingsPercentage)}%`
+    }
+  })), /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-slate-400 mt-2"
+  }, "Target Goal: ", userProfile.savingsGoalPercentage, "%"))), stats.highestCat && stats.highestCat.amount > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl p-4 border border-red-200/80 shadow-2xs flex items-center justify-between"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-10 h-10 rounded-xl bg-[#9B111E] text-white flex items-center justify-center font-extrabold shadow-xs"
+  }, window.getIconComponent('shield', {
+    size: 18
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] font-extrabold uppercase tracking-wider text-red-800"
+  }, "Highest Spending Category"), /*#__PURE__*/React.createElement("h4", {
+    className: "text-sm font-extrabold text-slate-900"
+  }, stats.highestCat.name, " \u2022 ", window.formatCurrency(stats.highestCat.amount, currency)), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500 mt-0.5"
+  }, "Accounts for ", /*#__PURE__*/React.createElement("strong", {
+    className: "text-red-700"
+  }, stats.highestCat.percentage, "%"), " of total expenses."))), /*#__PURE__*/React.createElement("div", {
+    className: "text-right hidden sm:block"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-semibold text-slate-500"
+  }, "Salaried Guideline"), /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] text-emerald-700 font-bold"
+  }, "Within 35% Safe Band"))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-2 gap-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-3"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-extrabold text-slate-900"
+  }, "Income vs Expense Trend"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-400"
+  }, "Monthly Cash Inflow vs Outflow")), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-semibold text-slate-500"
+  }, "Nov 2026")), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-3 pt-2"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between text-xs font-bold mb-1"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-emerald-700 flex items-center space-x-1"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"
+  }), /*#__PURE__*/React.createElement("span", null, "Total Income")), /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-800"
+  }, window.formatCurrency(stats.income, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "w-full bg-slate-100 rounded-full h-3 overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-emerald-500 h-3 rounded-full transition-all duration-500",
+    style: {
+      width: `${stats.income > 0 ? 100 : 0}%`
+    }
+  }))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between text-xs font-bold mb-1"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[#9B111E] flex items-center space-x-1"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "w-2.5 h-2.5 rounded-full bg-[#9B111E] inline-block"
+  }), /*#__PURE__*/React.createElement("span", null, "Total Expense")), /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-800"
+  }, window.formatCurrency(stats.expense, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "w-full bg-slate-100 rounded-full h-3 overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-[#9B111E] h-3 rounded-full transition-all duration-500",
+    style: {
+      width: `${stats.income > 0 ? Math.min(100, Math.round(stats.expense / stats.income * 100)) : 0}%`
+    }
+  }))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between text-xs font-bold mb-1"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-sky-700 flex items-center space-x-1"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "w-2.5 h-2.5 rounded-full bg-sky-500 inline-block"
+  }), /*#__PURE__*/React.createElement("span", null, "Surplus / Savings")), /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-800"
+  }, window.formatCurrency(stats.balance, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "w-full bg-slate-100 rounded-full h-3 overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-sky-500 h-3 rounded-full transition-all duration-500",
+    style: {
+      width: `${stats.income > 0 ? Math.min(100, Math.round(stats.balance / stats.income * 100)) : 0}%`
+    }
+  })))), /*#__PURE__*/React.createElement("div", {
+    className: "mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500"
+  }, /*#__PURE__*/React.createElement("span", null, "Savings Rate: ", /*#__PURE__*/React.createElement("strong", {
+    className: "text-emerald-600"
+  }, stats.savingsPercentage, "%")), /*#__PURE__*/React.createElement("span", null, "Burn Rate: ", /*#__PURE__*/React.createElement("strong", {
+    className: "text-[#9B111E]"
+  }, 100 - stats.savingsPercentage, "%")))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-3"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-extrabold text-slate-900"
+  }, "Expense Category Breakdown"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-400"
+  }, "Where salaried money went")), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-semibold text-slate-500"
+  }, stats.categoryBreakdown.length, " Categories")), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2.5 max-h-56 overflow-y-auto pr-1"
+  }, stats.categoryBreakdown.slice(0, 5).map((cat, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "space-y-1"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between text-xs"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-slate-800"
+  }, cat.name), /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-600 font-semibold"
+  }, window.formatCurrency(cat.amount, currency), " (", cat.percentage, "%)")), /*#__PURE__*/React.createElement("div", {
+    className: "w-full bg-slate-100 rounded-full h-2 overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-[#9B111E] h-2 rounded-full transition-all duration-300",
+    style: {
+      width: `${cat.percentage}%`
+    }
+  }))))), /*#__PURE__*/React.createElement("div", {
+    className: "mt-3 pt-3 border-t border-slate-100 text-center"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-slate-400"
+  }, "Top 5 categories represent ", stats.categoryBreakdown.slice(0, 5).reduce((acc, c) => acc + c.percentage, 0), "% of total monthly spend")))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-3"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-extrabold text-slate-900"
+  }, "Recent Transactions"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-400"
+  }, "Latest entries in your cash ledger")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => onNavigateToCashBook('OVERVIEW'),
+    className: "text-xs font-bold text-[#9B111E] hover:underline"
+  }, "View All Cash Book \u2192")), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2"
+  }, recentTransactions.map(tx => {
+    const isIncome = tx.type === 'IN';
+    return /*#__PURE__*/React.createElement("div", {
+      key: tx.id,
+      className: "flex items-center justify-between p-2.5 hover:bg-slate-50 rounded-xl transition border border-slate-100"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center space-x-2.5 overflow-hidden pr-2"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: `w-8 h-8 rounded-lg flex items-center justify-center font-extrabold text-xs shrink-0 ${isIncome ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-[#9B111E]'}`
+    }, isIncome ? '+' : '-'), /*#__PURE__*/React.createElement("div", {
+      className: "overflow-hidden"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: "text-xs font-bold text-slate-900 truncate"
+    }, tx.categoryName), /*#__PURE__*/React.createElement("p", {
+      className: "text-[10px] text-slate-400 truncate"
+    }, window.formatDateDisplay(tx.date), " \u2022 ", tx.comment))), /*#__PURE__*/React.createElement("span", {
+      className: `text-xs md:text-sm font-extrabold italic tracking-tight shrink-0 ${isIncome ? 'text-emerald-600' : 'text-[#9B111E]'}`
+    }, isIncome ? '+' : '-', window.formatCurrency(tx.amount, currency)));
+  })))));
+};
+
+// ===== FILE: src/reportsAndCategories.js =====
+// Reports Section, Categories Management, and Profile / Settings Views
+
+// ============================================================================
+// 4. REPORTS SECTION
+// ============================================================================
+window.ReportsView = function ({
+  transactions,
+  balanceSheet,
+  onUpdateBalanceSheet,
+  userProfile,
+  currency = "₹"
+}) {
+  const [activeReportTab, setActiveReportTab] = useState('income'); // 'income' | 'expense' | 'balanceSheet' | 'savings' | 'cashbook'
+  const [dateRange, setDateRange] = useState('thisMonth'); // 'thisMonth' | 'lastMonth' | 'all'
+  const [showEditBalanceSheetModal, setShowEditBalanceSheetModal] = useState(false);
+  const [cashbookSearch, setCashbookSearch] = useState('');
+  const [cashbookTypeFilter, setCashbookTypeFilter] = useState('ALL');
+
+  // Filtered transactions for reports
+  const reportTransactions = useMemo(() => {
+    return transactions.filter(tx => {
+      if (dateRange === 'thisMonth') return tx.date.startsWith('2026-11');
+      if (dateRange === 'lastMonth') return tx.date.startsWith('2026-10');
+      return true;
+    });
+  }, [transactions, dateRange]);
+
+  // Income calculations
+  const incomeStats = useMemo(() => {
+    let totalIncome = 0;
+    let salaryReceived = 0;
+    let otherIncome = 0;
+    const catMap = {};
+    const monthlyTrend = {};
+    reportTransactions.filter(tx => tx.type === 'IN').forEach(tx => {
+      const amt = Number(tx.amount) || 0;
+      totalIncome += amt;
+      if (tx.categoryName.toLowerCase().includes('salary')) {
+        salaryReceived += amt;
+      } else {
+        otherIncome += amt;
+      }
+      catMap[tx.categoryName] = (catMap[tx.categoryName] || 0) + amt;
+      const m = tx.date.slice(0, 7);
+      monthlyTrend[m] = (monthlyTrend[m] || 0) + amt;
+    });
+    const categoryList = Object.keys(catMap).map(k => ({
+      name: k,
+      amount: catMap[k],
+      percentage: totalIncome > 0 ? Math.round(catMap[k] / totalIncome * 100) : 0
+    })).sort((a, b) => b.amount - a.amount);
+    return {
+      totalIncome,
+      salaryReceived,
+      otherIncome,
+      categoryList,
+      monthlyTrend,
+      history: reportTransactions.filter(tx => tx.type === 'IN')
+    };
+  }, [reportTransactions]);
+
+  // Expense calculations
+  const expenseStats = useMemo(() => {
+    let totalExpenses = 0;
+    const catMap = {};
+    const dailyMap = {};
+    const monthlyTrend = {};
+    reportTransactions.filter(tx => tx.type === 'OUT').forEach(tx => {
+      const amt = Number(tx.amount) || 0;
+      totalExpenses += amt;
+      catMap[tx.categoryName] = (catMap[tx.categoryName] || 0) + amt;
+      dailyMap[tx.date] = (dailyMap[tx.date] || 0) + amt;
+      const m = tx.date.slice(0, 7);
+      monthlyTrend[m] = (monthlyTrend[m] || 0) + amt;
+    });
+    const categoryList = Object.keys(catMap).map(k => ({
+      name: k,
+      amount: catMap[k],
+      percentage: totalExpenses > 0 ? Math.round(catMap[k] / totalExpenses * 100) : 0
+    })).sort((a, b) => b.amount - a.amount);
+    const dailyList = Object.keys(dailyMap).map(d => ({
+      date: d,
+      amount: dailyMap[d]
+    })).sort((a, b) => new Date(b.date) - new Date(a.date));
+    const avgDailySpend = dailyList.length > 0 ? Math.round(totalExpenses / 30) : 0;
+    return {
+      totalExpenses,
+      categoryList,
+      dailyList,
+      avgDailySpend,
+      monthlyTrend,
+      history: reportTransactions.filter(tx => tx.type === 'OUT')
+    };
+  }, [reportTransactions]);
+
+  // Balance Sheet / Personal Financial Position calculations
+  const totalAssets = useMemo(() => {
+    const a = balanceSheet.assets;
+    return (a.cashInHand || 0) + (a.bankBalance || 0) + (a.savings || 0) + (a.investments || 0) + (a.otherAssets || 0);
+  }, [balanceSheet]);
+  const totalLiabilities = useMemo(() => {
+    const l = balanceSheet.liabilities;
+    return (l.homeLoan || 0) + (l.personalLoan || 0) + (l.creditCard || 0) + (l.otherLiabilities || 0);
+  }, [balanceSheet]);
+  const netWorth = totalAssets - totalLiabilities;
+
+  // Monthly Savings Report Calculations (Formula: Savings = Income - Expenses; % = (Savings / Income) * 100)
+  const savingsStats = useMemo(() => {
+    // Current Month (Nov 2026)
+    let novIncome = 0;
+    let novExpense = 0;
+    transactions.filter(t => t.date.startsWith('2026-11')).forEach(t => {
+      if (t.type === 'IN') novIncome += Number(t.amount);
+      if (t.type === 'OUT') novExpense += Number(t.amount);
+    });
+    const novSavings = novIncome - novExpense;
+    const novSavingsPct = novIncome > 0 ? Math.round(novSavings / novIncome * 100) : 0;
+
+    // Previous Month (Oct 2026)
+    let octIncome = 0;
+    let octExpense = 0;
+    transactions.filter(t => t.date.startsWith('2026-10')).forEach(t => {
+      if (t.type === 'IN') octIncome += Number(t.amount);
+      if (t.type === 'OUT') octExpense += Number(t.amount);
+    });
+    const octSavings = octIncome - octExpense;
+    const octSavingsPct = octIncome > 0 ? Math.round(octSavings / octIncome * 100) : 0;
+    const diffSavings = novSavings - octSavings;
+    const diffPct = novSavingsPct - octSavingsPct;
+    return {
+      current: {
+        income: novIncome,
+        expense: novExpense,
+        savings: novSavings,
+        percentage: novSavingsPct
+      },
+      previous: {
+        income: octIncome,
+        expense: octExpense,
+        savings: octSavings,
+        percentage: octSavingsPct
+      },
+      difference: {
+        savings: diffSavings,
+        percentage: diffPct
+      }
+    };
+  }, [transactions]);
+
+  // Cash Book Ledger Report Data with Running Balance
+  const cashbookReportRows = useMemo(() => {
+    const sorted = [...transactions].filter(tx => {
+      if (dateRange === 'thisMonth' && !tx.date.startsWith('2026-11')) return false;
+      if (dateRange === 'lastMonth' && !tx.date.startsWith('2026-10')) return false;
+      if (cashbookTypeFilter !== 'ALL' && tx.type !== cashbookTypeFilter) return false;
+      if (cashbookSearch.trim()) {
+        const q = cashbookSearch.toLowerCase();
+        return tx.categoryName.toLowerCase().includes(q) || tx.comment && tx.comment.toLowerCase().includes(q);
+      }
+      return true;
+    }).sort((a, b) => new Date(a.date) - new Date(b.date));
+    let bal = 0;
+    return sorted.map(tx => {
+      const isInc = tx.type === 'IN';
+      const amt = Number(tx.amount) || 0;
+      if (isInc) bal += amt;else bal -= amt;
+      return {
+        ...tx,
+        incomeAmt: isInc ? amt : 0,
+        expenseAmt: !isInc ? amt : 0,
+        runningBalance: bal
+      };
+    });
+  }, [transactions, dateRange, cashbookTypeFilter, cashbookSearch]);
+
+  // Export to CSV Function
+  const handleExportCSV = () => {
+    const headers = ["Date", "Type", "Category", "Description", "Income", "Expense", "Running Balance"];
+    const rows = cashbookReportRows.map(r => [`"${r.date}"`, `"${r.type}"`, `"${r.categoryName}"`, `"${(r.comment || '').replace(/"/g, '""')}"`, r.incomeAmt || 0, r.expenseAmt || 0, r.runningBalance || 0]);
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `CashBook_Report_${dateRange}_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col h-full bg-[#F8F9FA] overflow-y-auto"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white border-b border-slate-200/80 px-4 pt-3 pb-2 shadow-2xs sticky top-0 z-20"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-2"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", {
+    className: "text-base font-extrabold text-slate-900"
+  }, "Financial Reports & Analysis"), /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] text-slate-400"
+  }, "Salaried insights, balance sheet & cash ledger")), /*#__PURE__*/React.createElement("select", {
+    value: dateRange,
+    onChange: e => setDateRange(e.target.value),
+    className: "text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:ring-2 focus:ring-[#9B111E]"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "thisMonth"
+  }, "This Month (Nov 26)"), /*#__PURE__*/React.createElement("option", {
+    value: "lastMonth"
+  }, "Last Month (Oct 26)"), /*#__PURE__*/React.createElement("option", {
+    value: "all"
+  }, "All Available Records"))), /*#__PURE__*/React.createElement("div", {
+    className: "flex space-x-1 overflow-x-auto no-scrollbar pt-1"
+  }, [{
+    id: 'income',
+    label: 'Income Report'
+  }, {
+    id: 'expense',
+    label: 'Expense Report'
+  }, {
+    id: 'balanceSheet',
+    label: 'Personal Balance Sheet'
+  }, {
+    id: 'savings',
+    label: 'Monthly Savings'
+  }, {
+    id: 'cashbook',
+    label: 'Cash Book Ledger'
+  }].map(tab => /*#__PURE__*/React.createElement("button", {
+    key: tab.id,
+    onClick: () => setActiveReportTab(tab.id),
+    className: `px-3 py-1.5 rounded-lg text-xs font-bold shrink-0 transition ${activeReportTab === tab.id ? 'bg-[#9B111E] text-white shadow-2xs' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`
+  }, tab.label)))), /*#__PURE__*/React.createElement("div", {
+    className: "p-4 space-y-4 flex-1"
+  }, activeReportTab === 'income' && /*#__PURE__*/React.createElement("div", {
+    className: "space-y-4 animate-fade-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-3 gap-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] font-bold text-slate-400 uppercase tracking-wider"
+  }, "Total Income"), /*#__PURE__*/React.createElement("h3", {
+    className: "text-2xl font-extrabold text-emerald-600 mt-1"
+  }, window.formatCurrency(incomeStats.totalIncome, currency)), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500 mt-1"
+  }, "Inflow for ", dateRange === 'thisMonth' ? 'November 2026' : dateRange)), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement(window.SalaryPrivacyViewer, {
+    amount: incomeStats.salaryReceived,
+    currency: currency,
+    currentUser: userProfile,
+    label: "Salary Received",
+    size: "large",
+    subText: `${incomeStats.totalIncome > 0 ? Math.round(incomeStats.salaryReceived / incomeStats.totalIncome * 100) : 0}% of net income`
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] font-bold text-slate-400 uppercase tracking-wider"
+  }, "Other Income"), /*#__PURE__*/React.createElement("h3", {
+    className: "text-2xl font-extrabold text-sky-600 mt-1"
+  }, window.formatCurrency(incomeStats.otherIncome, currency)), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500 mt-1"
+  }, "Bonus, freelance & returns"))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-extrabold text-slate-900 mb-3"
+  }, "Category-wise Income Distribution"), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2.5"
+  }, incomeStats.categoryList.map((cat, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "space-y-1"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between text-xs"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-slate-800"
+  }, cat.name), /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-600 font-semibold"
+  }, window.formatCurrency(cat.amount, currency), " (", cat.percentage, "%)")), /*#__PURE__*/React.createElement("div", {
+    className: "w-full bg-slate-100 rounded-full h-2.5 overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-emerald-500 h-2.5 rounded-full",
+    style: {
+      width: `${cat.percentage}%`
+    }
+  })))))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-extrabold text-slate-900 mb-3"
+  }, "Income Transaction History"), /*#__PURE__*/React.createElement("div", {
+    className: "overflow-x-auto"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "w-full text-left text-xs"
+  }, /*#__PURE__*/React.createElement("thead", {
+    className: "bg-slate-50 text-slate-500 uppercase tracking-wider font-bold border-b border-slate-200"
+  }, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
+    className: "p-2.5"
+  }, "Date"), /*#__PURE__*/React.createElement("th", {
+    className: "p-2.5"
+  }, "Category"), /*#__PURE__*/React.createElement("th", {
+    className: "p-2.5"
+  }, "Description"), /*#__PURE__*/React.createElement("th", {
+    className: "p-2.5 text-right"
+  }, "Amount"))), /*#__PURE__*/React.createElement("tbody", {
+    className: "divide-y divide-slate-100 font-medium"
+  }, incomeStats.history.map(tx => /*#__PURE__*/React.createElement("tr", {
+    key: tx.id,
+    className: "hover:bg-slate-50"
+  }, /*#__PURE__*/React.createElement("td", {
+    className: "p-2.5 text-slate-500 whitespace-nowrap"
+  }, window.formatDateDisplay(tx.date)), /*#__PURE__*/React.createElement("td", {
+    className: "p-2.5 font-bold text-slate-900"
+  }, tx.categoryName), /*#__PURE__*/React.createElement("td", {
+    className: "p-2.5 text-slate-600 truncate max-w-xs"
+  }, tx.comment), /*#__PURE__*/React.createElement("td", {
+    className: "p-2.5 text-right font-extrabold text-emerald-600 whitespace-nowrap"
+  }, "+", window.formatCurrency(tx.amount, currency))))))))), activeReportTab === 'expense' && /*#__PURE__*/React.createElement("div", {
+    className: "space-y-4 animate-fade-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-3 gap-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] font-bold text-slate-400 uppercase tracking-wider"
+  }, "Total Expenses"), /*#__PURE__*/React.createElement("h3", {
+    className: "text-2xl font-extrabold text-[#9B111E] mt-1"
+  }, window.formatCurrency(expenseStats.totalExpenses, currency)), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500 mt-1"
+  }, "Outflow for selected period")), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] font-bold text-slate-400 uppercase tracking-wider"
+  }, "Avg Daily Spend"), /*#__PURE__*/React.createElement("h3", {
+    className: "text-2xl font-extrabold text-slate-900 mt-1"
+  }, window.formatCurrency(expenseStats.avgDailySpend, currency)), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500 mt-1"
+  }, "Based on active calendar days")), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] font-bold text-slate-400 uppercase tracking-wider"
+  }, "Top Spending Category"), /*#__PURE__*/React.createElement("h3", {
+    className: "text-lg font-extrabold text-[#9B111E] mt-1 truncate"
+  }, expenseStats.categoryList[0] ? expenseStats.categoryList[0].name : 'None'), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500 mt-1"
+  }, expenseStats.categoryList[0] ? `${window.formatCurrency(expenseStats.categoryList[0].amount, currency)} (${expenseStats.categoryList[0].percentage}%)` : 'No expenses'))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-extrabold text-slate-900 mb-3"
+  }, "Highest Spending Categories"), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-3"
+  }, expenseStats.categoryList.map((cat, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "space-y-1"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between text-xs"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-slate-800 flex items-center space-x-1.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "w-5 h-5 rounded-full bg-red-100 text-[#9B111E] flex items-center justify-center text-[10px] font-bold"
+  }, i + 1), /*#__PURE__*/React.createElement("span", null, cat.name)), /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-700 font-semibold"
+  }, window.formatCurrency(cat.amount, currency), " (", cat.percentage, "%)")), /*#__PURE__*/React.createElement("div", {
+    className: "w-full bg-slate-100 rounded-full h-2.5 overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-[#9B111E] h-2.5 rounded-full",
+    style: {
+      width: `${cat.percentage}%`
+    }
+  })))))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-extrabold text-slate-900 mb-3"
+  }, "Expense Transaction History"), /*#__PURE__*/React.createElement("div", {
+    className: "overflow-x-auto"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "w-full text-left text-xs"
+  }, /*#__PURE__*/React.createElement("thead", {
+    className: "bg-slate-50 text-slate-500 uppercase tracking-wider font-bold border-b border-slate-200"
+  }, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
+    className: "p-2.5"
+  }, "Date"), /*#__PURE__*/React.createElement("th", {
+    className: "p-2.5"
+  }, "Category"), /*#__PURE__*/React.createElement("th", {
+    className: "p-2.5"
+  }, "Details"), /*#__PURE__*/React.createElement("th", {
+    className: "p-2.5 text-right"
+  }, "Amount"))), /*#__PURE__*/React.createElement("tbody", {
+    className: "divide-y divide-slate-100 font-medium"
+  }, expenseStats.history.map(tx => /*#__PURE__*/React.createElement("tr", {
+    key: tx.id,
+    className: "hover:bg-slate-50"
+  }, /*#__PURE__*/React.createElement("td", {
+    className: "p-2.5 text-slate-500 whitespace-nowrap"
+  }, window.formatDateDisplay(tx.date)), /*#__PURE__*/React.createElement("td", {
+    className: "p-2.5 font-bold text-slate-900"
+  }, tx.categoryName), /*#__PURE__*/React.createElement("td", {
+    className: "p-2.5 text-slate-600 truncate max-w-xs"
+  }, tx.comment), /*#__PURE__*/React.createElement("td", {
+    className: "p-2.5 text-right font-extrabold text-[#9B111E] whitespace-nowrap"
+  }, "-", window.formatCurrency(tx.amount, currency))))))))), activeReportTab === 'balanceSheet' && /*#__PURE__*/React.createElement("div", {
+    className: "space-y-4 animate-fade-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-gradient-to-r from-slate-900 to-slate-800 text-white p-4 rounded-2xl shadow-md flex items-center justify-between"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] uppercase tracking-wider font-bold text-sky-400"
+  }, "Personal Financial Statement"), /*#__PURE__*/React.createElement("h3", {
+    className: "text-lg font-extrabold mt-0.5"
+  }, "Net Worth & Solvency"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-300"
+  }, "Net Worth = Total Assets - Total Liabilities")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setShowEditBalanceSheetModal(true),
+    className: "px-3 py-1.5 bg-[#9B111E] hover:bg-red-700 active:scale-95 text-white rounded-lg text-xs font-bold shadow-xs transition flex items-center space-x-1.5"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('edit', {
+    size: 14
+  })), /*#__PURE__*/React.createElement("span", null, "Edit Position"))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-center py-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-bold text-slate-400 uppercase tracking-wider"
+  }, "Current Estimated Net Worth"), /*#__PURE__*/React.createElement("h1", {
+    className: "text-3xl md:text-4xl font-extrabold italic text-slate-900 my-1 tracking-tight"
+  }, window.formatCurrency(netWorth, currency)), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500"
+  }, netWorth >= 0 ? "Positive Net Financial Standing" : "Debt exceeds liquid assets")), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-slate-100 text-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "p-3 bg-emerald-50 rounded-xl"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-bold text-emerald-800 uppercase"
+  }, "Total Assets"), /*#__PURE__*/React.createElement("p", {
+    className: "text-lg font-extrabold text-emerald-700 mt-0.5"
+  }, window.formatCurrency(totalAssets, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "p-3 bg-red-50 rounded-xl"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-bold text-red-800 uppercase"
+  }, "Total Liabilities"), /*#__PURE__*/React.createElement("p", {
+    className: "text-lg font-extrabold text-[#9B111E] mt-0.5"
+  }, window.formatCurrency(totalLiabilities, currency))))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-2 gap-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between pb-2 mb-3 border-b border-slate-100"
+  }, /*#__PURE__*/React.createElement("h4", {
+    className: "text-sm font-extrabold text-emerald-700 uppercase tracking-wide flex items-center space-x-1.5"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('wallet', {
+    size: 16
+  })), /*#__PURE__*/React.createElement("span", null, "Assets (What You Own)")), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-bold text-emerald-700"
+  }, window.formatCurrency(totalAssets, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2 text-xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between py-1 border-b border-slate-50"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-600 font-medium"
+  }, "Cash in Hand"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-slate-900"
+  }, window.formatCurrency(balanceSheet.assets.cashInHand, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between py-1 border-b border-slate-50"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-600 font-medium"
+  }, "Bank Balance (Salary A/c)"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-slate-900"
+  }, window.formatCurrency(balanceSheet.assets.bankBalance, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between py-1 border-b border-slate-50"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-600 font-medium"
+  }, "Savings & Emergency Fund"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-slate-900"
+  }, window.formatCurrency(balanceSheet.assets.savings, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between py-1 border-b border-slate-50"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-600 font-medium"
+  }, "Investments (Equities / Mutual Funds / PPF)"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-slate-900"
+  }, window.formatCurrency(balanceSheet.assets.investments, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between py-1"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-600 font-medium"
+  }, "Other Assets (Gold / Vehicle Equity)"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-slate-900"
+  }, window.formatCurrency(balanceSheet.assets.otherAssets, currency))))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between pb-2 mb-3 border-b border-slate-100"
+  }, /*#__PURE__*/React.createElement("h4", {
+    className: "text-sm font-extrabold text-red-700 uppercase tracking-wide flex items-center space-x-1.5"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('credit-card', {
+    size: 16
+  })), /*#__PURE__*/React.createElement("span", null, "Liabilities (What You Owe)")), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-bold text-[#9B111E]"
+  }, window.formatCurrency(totalLiabilities, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2 text-xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between py-1 border-b border-slate-50"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-600 font-medium"
+  }, "Home Loan Outstanding"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-slate-900"
+  }, window.formatCurrency(balanceSheet.liabilities.homeLoan, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between py-1 border-b border-slate-50"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-600 font-medium"
+  }, "Personal Loan Outstanding"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-slate-900"
+  }, window.formatCurrency(balanceSheet.liabilities.personalLoan, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between py-1 border-b border-slate-50"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-600 font-medium"
+  }, "Credit Card Outstanding"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-slate-900"
+  }, window.formatCurrency(balanceSheet.liabilities.creditCard, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between py-1"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-600 font-medium"
+  }, "Other Liabilities & Dues"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-slate-900"
+  }, window.formatCurrency(balanceSheet.liabilities.otherLiabilities, currency))))))), activeReportTab === 'savings' && /*#__PURE__*/React.createElement("div", {
+    className: "space-y-4 animate-fade-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-bold text-slate-400 uppercase tracking-wider"
+  }, "Applied Savings Formula"), /*#__PURE__*/React.createElement("div", {
+    className: "mt-2 p-3 bg-slate-50 rounded-xl font-mono text-xs text-slate-700 space-y-1"
+  }, /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("strong", null, "Savings"), " = Total Income - Total Expenses"), /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("strong", null, "Savings Percentage"), " = (Savings / Total Income) \xD7 100"))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-2 gap-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border-2 border-emerald-500 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between items-center mb-3"
+  }, /*#__PURE__*/React.createElement("h4", {
+    className: "text-sm font-extrabold text-slate-900"
+  }, "Current Month (November 2026)"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold"
+  }, savingsStats.current.percentage, "% Savings Rate")), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2 text-xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between py-1 border-b border-slate-100"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-500"
+  }, "Total Monthly Income"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-emerald-600"
+  }, "+", window.formatCurrency(savingsStats.current.income, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between py-1 border-b border-slate-100"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-500"
+  }, "Total Monthly Expenses"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-[#9B111E]"
+  }, "-", window.formatCurrency(savingsStats.current.expense, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between py-1.5 font-bold text-sm bg-emerald-50 px-2 rounded-lg"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-emerald-900"
+  }, "Monthly Net Savings"), /*#__PURE__*/React.createElement("span", {
+    className: "text-emerald-700"
+  }, window.formatCurrency(savingsStats.current.savings, currency))))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between items-center mb-3"
+  }, /*#__PURE__*/React.createElement("h4", {
+    className: "text-sm font-extrabold text-slate-900"
+  }, "Previous Month (October 2026)"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold"
+  }, savingsStats.previous.percentage, "% Savings Rate")), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2 text-xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between py-1 border-b border-slate-100"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-500"
+  }, "Total Monthly Income"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-slate-800"
+  }, "+", window.formatCurrency(savingsStats.previous.income, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between py-1 border-b border-slate-100"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-500"
+  }, "Total Monthly Expenses"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-slate-800"
+  }, "-", window.formatCurrency(savingsStats.previous.expense, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between py-1.5 font-bold text-sm bg-slate-50 px-2 rounded-lg"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-700"
+  }, "Monthly Net Savings"), /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-900"
+  }, window.formatCurrency(savingsStats.previous.savings, currency)))))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-2xl border border-blue-200/80 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("h4", {
+    className: "text-sm font-extrabold text-blue-900 mb-1"
+  }, "Previous Month Comparison & Trajectory"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-blue-800"
+  }, "You saved ", /*#__PURE__*/React.createElement("strong", {
+    className: "font-bold"
+  }, window.formatCurrency(Math.abs(savingsStats.difference.savings), currency)), " ", savingsStats.difference.savings >= 0 ? 'more' : 'less', " this month compared to October, with a ", /*#__PURE__*/React.createElement("strong", null, Math.abs(savingsStats.difference.percentage), "%"), " ", savingsStats.difference.percentage >= 0 ? 'higher' : 'lower', " savings rate."))), activeReportTab === 'cashbook' && /*#__PURE__*/React.createElement("div", {
+    className: "space-y-4 animate-fade-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs space-y-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col sm:flex-row items-center justify-between gap-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "relative w-full sm:w-64"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+  }, window.getIconComponent('search', {
+    size: 16
+  })), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: cashbookSearch,
+    onChange: e => setCashbookSearch(e.target.value),
+    placeholder: "Search ledger entries...",
+    className: "w-full pl-9 pr-3 py-1.5 bg-slate-50 rounded-lg text-xs font-medium border border-slate-200 focus:outline-hidden"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-2 w-full sm:w-auto justify-end"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex bg-slate-100 p-1 rounded-lg"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setCashbookTypeFilter('ALL'),
+    className: `px-2.5 py-1 text-xs font-bold rounded-md ${cashbookTypeFilter === 'ALL' ? 'bg-white shadow-2xs text-slate-900' : 'text-slate-600'}`
+  }, "All"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setCashbookTypeFilter('IN'),
+    className: `px-2.5 py-1 text-xs font-bold rounded-md ${cashbookTypeFilter === 'IN' ? 'bg-emerald-600 text-white' : 'text-emerald-700'}`
+  }, "IN"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setCashbookTypeFilter('OUT'),
+    className: `px-2.5 py-1 text-xs font-bold rounded-md ${cashbookTypeFilter === 'OUT' ? 'bg-[#9B111E] text-white' : 'text-[#9B111E]'}`
+  }, "OUT")), /*#__PURE__*/React.createElement("button", {
+    onClick: handleExportCSV,
+    className: "px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold shadow-xs transition flex items-center space-x-1.5"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('download', {
+    size: 14
+  })), /*#__PURE__*/React.createElement("span", null, "Export CSV"))))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "overflow-x-auto"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "w-full text-left text-xs"
+  }, /*#__PURE__*/React.createElement("thead", {
+    className: "bg-[#EDF2F7] text-slate-700 font-extrabold uppercase tracking-wider border-b border-slate-200"
+  }, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
+    className: "p-3 whitespace-nowrap"
+  }, "Date"), /*#__PURE__*/React.createElement("th", {
+    className: "p-3"
+  }, "Type"), /*#__PURE__*/React.createElement("th", {
+    className: "p-3"
+  }, "Category"), /*#__PURE__*/React.createElement("th", {
+    className: "p-3"
+  }, "Description"), /*#__PURE__*/React.createElement("th", {
+    className: "p-3 text-right"
+  }, "Income (IN)"), /*#__PURE__*/React.createElement("th", {
+    className: "p-3 text-right"
+  }, "Expense (OUT)"), /*#__PURE__*/React.createElement("th", {
+    className: "p-3 text-right whitespace-nowrap"
+  }, "Running Balance"))), /*#__PURE__*/React.createElement("tbody", {
+    className: "divide-y divide-slate-100 font-medium"
+  }, cashbookReportRows.length === 0 ? /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    colSpan: "7",
+    className: "p-8 text-center text-slate-400"
+  }, "No ledger records found for this criteria.")) : cashbookReportRows.map(row => /*#__PURE__*/React.createElement("tr", {
+    key: row.id,
+    className: "hover:bg-slate-50 transition"
+  }, /*#__PURE__*/React.createElement("td", {
+    className: "p-3 text-slate-500 whitespace-nowrap font-medium"
+  }, window.formatDateDisplay(row.date)), /*#__PURE__*/React.createElement("td", {
+    className: "p-3 whitespace-nowrap"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: `px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${row.type === 'IN' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}`
+  }, row.type)), /*#__PURE__*/React.createElement("td", {
+    className: "p-3 font-bold text-slate-900 whitespace-nowrap"
+  }, row.categoryName), /*#__PURE__*/React.createElement("td", {
+    className: "p-3 text-slate-600 max-w-xs truncate"
+  }, row.comment || '-'), /*#__PURE__*/React.createElement("td", {
+    className: "p-3 text-right font-extrabold text-emerald-600 whitespace-nowrap"
+  }, row.incomeAmt > 0 ? `+${window.formatCurrency(row.incomeAmt, currency)}` : '-'), /*#__PURE__*/React.createElement("td", {
+    className: "p-3 text-right font-extrabold text-[#9B111E] whitespace-nowrap"
+  }, row.expenseAmt > 0 ? `-${window.formatCurrency(row.expenseAmt, currency)}` : '-'), /*#__PURE__*/React.createElement("td", {
+    className: "p-3 text-right font-extrabold text-slate-900 whitespace-nowrap"
+  }, window.formatCurrency(row.runningBalance, currency)))))))))), showEditBalanceSheetModal && /*#__PURE__*/React.createElement(window.EditBalanceSheetModal, {
+    balanceSheet: balanceSheet,
+    onSave: updated => {
+      onUpdateBalanceSheet(updated);
+      setShowEditBalanceSheetModal(false);
+    },
+    onClose: () => setShowEditBalanceSheetModal(false),
+    currency: currency
+  }));
+};
+
+// ============================================================================
+// EDIT BALANCE SHEET MODAL
+// ============================================================================
+window.EditBalanceSheetModal = function ({
+  balanceSheet,
+  onSave,
+  onClose,
+  currency = "₹"
+}) {
+  const [assets, setAssets] = useState({
+    ...balanceSheet.assets
+  });
+  const [liabilities, setLiabilities] = useState({
+    ...balanceSheet.liabilities
+  });
+  const handleAssetChange = (key, val) => {
+    setAssets({
+      ...assets,
+      [key]: Number(val) || 0
+    });
+  };
+  const handleLiabilityChange = (key, val) => {
+    setLiabilities({
+      ...liabilities,
+      [key]: Number(val) || 0
+    });
+  };
+  const calcTotalA = Object.values(assets).reduce((a, b) => a + Number(b || 0), 0);
+  const calcTotalL = Object.values(liabilities).reduce((a, b) => a + Number(b || 0), 0);
+  const calcNW = calcTotalA - calcTotalL;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl max-w-lg w-full p-5 shadow-2xl my-6 animate-scale-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between pb-3 border-b border-slate-100"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "font-extrabold text-slate-900 text-base"
+  }, "Edit Personal Financial Position"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-400"
+  }, "Update current asset balances and liability values")), /*#__PURE__*/React.createElement("button", {
+    onClick: onClose,
+    className: "p-1 text-slate-400 hover:text-slate-600 rounded-full"
+  }, window.getIconComponent('x', {
+    size: 18
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "my-4 space-y-4 max-h-[60vh] overflow-y-auto pr-1"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h4", {
+    className: "text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2"
+  }, "Assets"), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-500 font-semibold block mb-1"
+  }, "Cash in Hand"), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    value: assets.cashInHand,
+    onChange: e => handleAssetChange('cashInHand', e.target.value),
+    className: "w-full p-2 border border-slate-200 rounded-lg font-bold"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-500 font-semibold block mb-1"
+  }, "Bank Balance"), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    value: assets.bankBalance,
+    onChange: e => handleAssetChange('bankBalance', e.target.value),
+    className: "w-full p-2 border border-slate-200 rounded-lg font-bold"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-500 font-semibold block mb-1"
+  }, "Savings / RD / FD"), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    value: assets.savings,
+    onChange: e => handleAssetChange('savings', e.target.value),
+    className: "w-full p-2 border border-slate-200 rounded-lg font-bold"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-500 font-semibold block mb-1"
+  }, "Investments (Equities/MF)"), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    value: assets.investments,
+    onChange: e => handleAssetChange('investments', e.target.value),
+    className: "w-full p-2 border border-slate-200 rounded-lg font-bold"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "sm:col-span-2"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-500 font-semibold block mb-1"
+  }, "Other Assets (Gold/Property)"), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    value: assets.otherAssets,
+    onChange: e => handleAssetChange('otherAssets', e.target.value),
+    className: "w-full p-2 border border-slate-200 rounded-lg font-bold"
+  })))), /*#__PURE__*/React.createElement("div", {
+    className: "pt-3 border-t border-slate-100"
+  }, /*#__PURE__*/React.createElement("h4", {
+    className: "text-xs font-bold text-red-700 uppercase tracking-wider mb-2"
+  }, "Liabilities"), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-500 font-semibold block mb-1"
+  }, "Home Loan Outstanding"), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    value: liabilities.homeLoan,
+    onChange: e => handleLiabilityChange('homeLoan', e.target.value),
+    className: "w-full p-2 border border-slate-200 rounded-lg font-bold"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-500 font-semibold block mb-1"
+  }, "Personal Loan"), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    value: liabilities.personalLoan,
+    onChange: e => handleLiabilityChange('personalLoan', e.target.value),
+    className: "w-full p-2 border border-slate-200 rounded-lg font-bold"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-500 font-semibold block mb-1"
+  }, "Credit Card Due"), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    value: liabilities.creditCard,
+    onChange: e => handleLiabilityChange('creditCard', e.target.value),
+    className: "w-full p-2 border border-slate-200 rounded-lg font-bold"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-500 font-semibold block mb-1"
+  }, "Other Liabilities"), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    value: liabilities.otherLiabilities,
+    onChange: e => handleLiabilityChange('otherLiabilities', e.target.value),
+    className: "w-full p-2 border border-slate-200 rounded-lg font-bold"
+  }))))), /*#__PURE__*/React.createElement("div", {
+    className: "p-3 bg-slate-50 rounded-xl mb-4 text-xs font-bold flex justify-between items-center"
+  }, /*#__PURE__*/React.createElement("span", null, "Recalculated Net Worth:"), /*#__PURE__*/React.createElement("span", {
+    className: "text-base text-slate-900 font-extrabold"
+  }, window.formatCurrency(calcNW, currency))), /*#__PURE__*/React.createElement("div", {
+    className: "flex space-x-2"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: onClose,
+    className: "flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold"
+  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => onSave({
+      assets,
+      liabilities,
+      lastUpdated: new Date().toISOString().slice(0, 10)
+    }),
+    className: "flex-1 py-2 px-3 bg-[#9B111E] hover:bg-[#880b19] text-white rounded-xl text-xs font-bold shadow-xs"
+  }, "Save Changes"))));
+};
+
+// ============================================================================
+// 5. CATEGORIES MANAGEMENT SCREEN
+// ============================================================================
+window.CategoriesView = function ({
+  incomeCategories,
+  expenseCategories,
+  transactions,
+  onAddCategory,
+  onEditCategory,
+  onDeleteCategory,
+  currency = "₹"
+}) {
+  const [activeTab, setActiveTab] = useState('OUT'); // 'OUT' (Expense) or 'IN' (Income)
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [editingCategory, setEditingCategory] = useState(null);
+  const [deleteConfirmCategory, setDeleteConfirmCategory] = useState(null);
+
+  // Compute transaction counts and totals per category
+  const categoryStats = useMemo(() => {
+    const stats = {};
+    transactions.forEach(tx => {
+      if (!stats[tx.categoryId]) {
+        stats[tx.categoryId] = {
+          count: 0,
+          total: 0
+        };
+      }
+      stats[tx.categoryId].count += 1;
+      stats[tx.categoryId].total += Number(tx.amount) || 0;
+    });
+    return stats;
+  }, [transactions]);
+  const currentCategories = activeTab === 'OUT' ? expenseCategories : incomeCategories;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col h-full bg-[#F8F9FA] overflow-y-auto"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white border-b border-slate-200/80 px-4 py-3.5 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", {
+    className: "text-base font-extrabold text-slate-900"
+  }, "Categories Management"), /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] text-slate-400"
+  }, "Organize and customize Income & Expense categories")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setShowAddModal(true),
+    className: "px-3 py-1.5 bg-[#9B111E] hover:bg-[#880b19] active:scale-95 text-white rounded-lg text-xs font-bold shadow-xs transition flex items-center space-x-1"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('plus', {
+    size: 14
+  })), /*#__PURE__*/React.createElement("span", null, "Add Category"))), /*#__PURE__*/React.createElement("div", {
+    className: "flex space-x-2 mt-3 pt-3 border-t border-slate-100"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setActiveTab('OUT'),
+    className: `flex-1 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center space-x-1.5 ${activeTab === 'OUT' ? 'bg-[#9B111E] text-white shadow-2xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`
+  }, /*#__PURE__*/React.createElement("span", null, "Expense Categories (", expenseCategories.length, ")")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setActiveTab('IN'),
+    className: `flex-1 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center space-x-1.5 ${activeTab === 'IN' ? 'bg-emerald-600 text-white shadow-2xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`
+  }, /*#__PURE__*/React.createElement("span", null, "Income Categories (", incomeCategories.length, ")")))), /*#__PURE__*/React.createElement("div", {
+    className: "p-4 space-y-3 flex-1"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 sm:grid-cols-2 gap-3"
+  }, currentCategories.map(cat => {
+    const stat = categoryStats[cat.id] || {
+      count: 0,
+      total: 0
+    };
+    return /*#__PURE__*/React.createElement("div", {
+      key: cat.id,
+      className: "bg-white rounded-xl p-3.5 border border-slate-200/90 shadow-2xs hover:shadow-xs transition flex items-center justify-between"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center space-x-3 overflow-hidden pr-2"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 shadow-2xs",
+      style: {
+        backgroundColor: cat.color || '#9B111E'
+      }
+    }, window.getIconComponent(cat.icon || 'tags', {
+      size: 18
+    })), /*#__PURE__*/React.createElement("div", {
+      className: "overflow-hidden"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: "text-xs md:text-sm font-bold text-slate-900 truncate"
+    }, cat.name), /*#__PURE__*/React.createElement("p", {
+      className: "text-[10px] text-slate-400"
+    }, cat.group || 'General'), /*#__PURE__*/React.createElement("p", {
+      className: "text-[11px] font-semibold text-slate-600 mt-0.5"
+    }, stat.count, " txns \u2022 ", window.formatCurrency(stat.total, currency)))), /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center space-x-1 shrink-0"
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: () => setEditingCategory(cat),
+      className: "p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition",
+      title: "Edit Category"
+    }, window.getIconComponent('edit', {
+      size: 16
+    })), /*#__PURE__*/React.createElement("button", {
+      onClick: () => setDeleteConfirmCategory(cat),
+      className: "p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition",
+      title: "Delete Category"
+    }, window.getIconComponent('trash', {
+      size: 16
+    }))));
+  }))), showAddModal && /*#__PURE__*/React.createElement(window.CategoryFormModal, {
+    type: activeTab,
+    onSave: newCat => {
+      onAddCategory(newCat, activeTab);
+      setShowAddModal(false);
+    },
+    onClose: () => setShowAddModal(false)
+  }), editingCategory && /*#__PURE__*/React.createElement(window.CategoryFormModal, {
+    type: activeTab,
+    initialData: editingCategory,
+    onSave: updatedCat => {
+      onEditCategory(updatedCat, activeTab);
+      setEditingCategory(null);
+    },
+    onClose: () => setEditingCategory(null)
+  }), deleteConfirmCategory && /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl max-w-xs w-full p-5 shadow-2xl animate-scale-in text-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-12 h-12 rounded-full bg-red-100 text-[#9B111E] flex items-center justify-center mx-auto mb-3"
+  }, window.getIconComponent('trash', {
+    size: 24
+  })), /*#__PURE__*/React.createElement("h3", {
+    className: "font-extrabold text-slate-900 text-sm mb-1"
+  }, "Delete \"", deleteConfirmCategory.name, "\"?"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500 mb-4"
+  }, "Are you sure you want to remove this category? Past recorded transactions will preserve their category label."), /*#__PURE__*/React.createElement("div", {
+    className: "flex space-x-2"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setDeleteConfirmCategory(null),
+    className: "flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold"
+  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      onDeleteCategory(deleteConfirmCategory.id, activeTab);
+      setDeleteConfirmCategory(null);
+    },
+    className: "flex-1 py-2 px-3 bg-[#9B111E] hover:bg-red-700 text-white rounded-xl text-xs font-bold"
+  }, "Delete")))));
+};
+
+// Category Add / Edit Form Modal
+window.CategoryFormModal = function ({
+  type,
+  initialData,
+  onSave,
+  onClose
+}) {
+  const [name, setName] = useState(initialData ? initialData.name : '');
+  const [group, setGroup] = useState(initialData ? initialData.group : type === 'OUT' ? 'Home & Living' : 'Salary & Career');
+  const [color, setColor] = useState(initialData ? initialData.color : type === 'OUT' ? '#DC2626' : '#059669');
+  const [icon, setIcon] = useState(initialData ? initialData.icon : 'shopping-cart');
+  const presetColors = ['#DC2626', '#B91C1C', '#EA580C', '#D97706', '#EAB308', '#16A34A', '#059669', '#0891B2', '#2563EB', '#4F46E5', '#7C3AED', '#DB2777', '#475569'];
+  const presetIcons = ['shopping-cart', 'shopping-bag', 'home', 'key', 'fuel', 'car', 'bus', 'utensils', 'zap', 'droplet', 'wifi', 'smartphone', 'film', 'activity', 'shield', 'gift', 'award', 'laptop', 'wallet', 'credit-card', 'tool'];
+  const handleSubmit = e => {
+    e.preventDefault();
+    if (!name.trim()) return;
+    onSave({
+      id: initialData ? initialData.id : `${type.toLowerCase()}-${Date.now()}`,
+      name: name.trim(),
+      group,
+      color,
+      icon
+    });
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl animate-scale-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between pb-3 border-b border-slate-100"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "font-extrabold text-slate-900 text-sm"
+  }, initialData ? 'Edit Category' : `Add ${type === 'OUT' ? 'Expense' : 'Income'} Category`), /*#__PURE__*/React.createElement("button", {
+    onClick: onClose,
+    className: "p-1 text-slate-400 hover:text-slate-600 rounded-full"
+  }, window.getIconComponent('x', {
+    size: 18
+  }))), /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleSubmit,
+    className: "my-4 space-y-3 text-xs"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block mb-1"
+  }, "Category Name"), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: name,
+    onChange: e => setName(e.target.value),
+    placeholder: "e.g. Electricity Bill, Gym, Side Project",
+    className: "w-full p-2.5 border border-slate-200 rounded-lg font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#9B111E]",
+    required: true
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block mb-1"
+  }, "Group / Section"), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: group,
+    onChange: e => setGroup(e.target.value),
+    placeholder: "e.g. Home & Living, Personal, Career",
+    className: "w-full p-2.5 border border-slate-200 rounded-lg font-semibold focus:outline-hidden"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block mb-1.5"
+  }, "Pick Color"), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap gap-1.5"
+  }, presetColors.map(c => /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    key: c,
+    onClick: () => setColor(c),
+    className: `w-6 h-6 rounded-full transition-transform ${color === c ? 'scale-125 ring-2 ring-slate-800 ring-offset-2' : 'hover:scale-110'}`,
+    style: {
+      backgroundColor: c
+    }
+  })))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block mb-1.5"
+  }, "Pick Icon"), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-7 gap-1.5 max-h-28 overflow-y-auto p-1 bg-slate-50 rounded-lg"
+  }, presetIcons.map(ic => /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    key: ic,
+    onClick: () => setIcon(ic),
+    className: `p-1.5 rounded-lg flex items-center justify-center transition ${icon === ic ? 'bg-[#9B111E] text-white' : 'text-slate-600 hover:bg-slate-200'}`
+  }, window.getIconComponent(ic, {
+    size: 16
+  }))))), /*#__PURE__*/React.createElement("div", {
+    className: "flex space-x-2 pt-2"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: onClose,
+    className: "flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold"
+  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    className: "flex-1 py-2 px-3 bg-[#9B111E] hover:bg-[#880b19] text-white rounded-xl font-bold shadow-xs"
+  }, "Save Category")))));
+};
+
+// ============================================================================
+// 6. PROFILE / SETTINGS SCREEN
+// ============================================================================
+window.ProfileSettingsView = function ({
+  userProfile,
+  onUpdateProfile,
+  onResetData,
+  onClearData,
+  transactions,
+  categories,
+  currency = "₹",
+  onOpenLoginModal,
+  onImportJSONData,
+  onLogout
+}) {
+  const [profile, setProfile] = useState({
+    ...userProfile
+  });
+  const [savedSuccess, setSavedSuccess] = useState(false);
+  useEffect(() => {
+    setProfile({
+      ...userProfile
+    });
+  }, [userProfile]);
+  const handleSave = e => {
+    e.preventDefault();
+    onUpdateProfile(profile);
+    setSavedSuccess(true);
+    setTimeout(() => setSavedSuccess(false), 2000);
+  };
+
+  // Export JSON Backup
+  const handleExportJSON = () => {
+    const fullBackup = {
+      userProfile: profile,
+      transactions,
+      exportedAt: new Date().toISOString()
+    };
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fullBackup, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `PersonalFinance_Data_${profile.name.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col h-full bg-[#F8F9FA] overflow-y-auto"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white border-b border-slate-200/80 px-4 py-3.5 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-base font-extrabold text-slate-900"
+  }, "Profile & Preferences"), /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] text-slate-400"
+  }, "Configure salary parameters, currency, and data backup")), /*#__PURE__*/React.createElement("div", {
+    className: "p-4 space-y-4 max-w-xl mx-auto w-full"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs flex items-center justify-between"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-10 h-10 rounded-full bg-[#9B111E] text-white flex items-center justify-center font-extrabold text-xs shadow-xs"
+  }, profile.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-1.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-extrabold text-slate-900 text-xs"
+  }, profile.name), /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-sm bg-slate-100 text-slate-700"
+  }, profile.role || 'user')), /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] text-slate-400 font-mono"
+  }, profile.email || 'user@cashbook.com'))), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-2"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: onOpenLoginModal,
+    className: "px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition flex items-center space-x-1.5"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('user-check', {
+    size: 14
+  })), /*#__PURE__*/React.createElement("span", null, "Switch User")), onLogout && /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: onLogout,
+    className: "px-3 py-1.5 bg-red-50 hover:bg-red-100 text-[#9B111E] rounded-xl text-xs font-bold transition flex items-center space-x-1",
+    title: "Log out of Cash Book"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('log-out', {
+    size: 14
+  })), /*#__PURE__*/React.createElement("span", null, "Log Out")))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-3 mb-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-12 h-12 rounded-full bg-[#9B111E] text-white flex items-center justify-center font-extrabold text-base shadow-xs"
+  }, profile.name ? profile.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'U'), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "font-extrabold text-slate-900 text-sm"
+  }, profile.name), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-500"
+  }, profile.roleTitle || profile.role, " \u2022 ", profile.company))), /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleSave,
+    className: "space-y-3 text-xs"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block mb-1"
+  }, "Full Name"), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: profile.name,
+    onChange: e => setProfile({
+      ...profile,
+      name: e.target.value
+    }),
+    className: "w-full p-2.5 border border-slate-200 rounded-lg font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#9B111E]"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 sm:grid-cols-2 gap-3"
+  }, /*#__PURE__*/React.createElement(window.SalaryPrivacyInput, {
+    value: profile.monthlySalary,
+    onChange: val => setProfile({
+      ...profile,
+      monthlySalary: val
+    }),
+    currentUser: profile,
+    currency: currency
+  }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block mb-1"
+  }, "Monthly Payday"), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    min: "1",
+    max: "31",
+    value: profile.payDay,
+    onChange: e => setProfile({
+      ...profile,
+      payDay: Number(e.target.value)
+    }),
+    className: "w-full p-2.5 border border-slate-200 rounded-lg font-semibold focus:outline-hidden"
+  }))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block mb-1"
+  }, "Preferred Currency Symbol"), /*#__PURE__*/React.createElement("select", {
+    value: profile.currency,
+    onChange: e => setProfile({
+      ...profile,
+      currency: e.target.value
+    }),
+    className: "w-full p-2.5 border border-slate-200 rounded-lg font-bold bg-white focus:outline-hidden"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "\u20B9"
+  }, "\u20B9 - Indian Rupee (INR)"), /*#__PURE__*/React.createElement("option", {
+    value: "$"
+  }, "$ - US Dollar (USD)"), /*#__PURE__*/React.createElement("option", {
+    value: "\u20AC"
+  }, "\u20AC - Euro (EUR)"), /*#__PURE__*/React.createElement("option", {
+    value: "\xA3"
+  }, "\xA3 - British Pound (GBP)"), /*#__PURE__*/React.createElement("option", {
+    value: "AED"
+  }, "AED - UAE Dirham"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block mb-1"
+  }, "Monthly Savings Target (%)"), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    min: "5",
+    max: "80",
+    value: profile.savingsGoalPercentage,
+    onChange: e => setProfile({
+      ...profile,
+      savingsGoalPercentage: Number(e.target.value)
+    }),
+    className: "w-full p-2.5 border border-slate-200 rounded-lg font-bold focus:outline-hidden"
+  })), /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    className: "w-full py-2.5 bg-[#9B111E] hover:bg-[#880b19] text-white rounded-xl font-bold text-xs shadow-xs transition"
+  }, savedSuccess ? '✓ Profile Saved Successfully' : 'Save Profile Changes'))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs space-y-2.5 text-xs"
+  }, /*#__PURE__*/React.createElement("h4", {
+    className: "font-extrabold text-slate-900 text-sm mb-1"
+  }, "Data Storage & Backup"), /*#__PURE__*/React.createElement("p", {
+    className: "text-slate-500"
+  }, "All data is saved securely in your browser's local state. You can export a JSON snapshot anytime."), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col sm:flex-row gap-2 pt-2"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: handleExportJSON,
+    className: "flex-1 py-2 px-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold transition flex items-center justify-center space-x-1.5"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('download', {
+    size: 14
+  })), /*#__PURE__*/React.createElement("span", null, "Export JSON")), /*#__PURE__*/React.createElement("label", {
+    className: "flex-1 py-2 px-3 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl font-bold transition flex items-center justify-center space-x-1.5 cursor-pointer text-center"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('upload', {
+    size: 14
+  })), /*#__PURE__*/React.createElement("span", null, "Import JSON"), /*#__PURE__*/React.createElement("input", {
+    type: "file",
+    accept: ".json",
+    className: "hidden",
+    onChange: e => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = event => {
+          try {
+            const parsed = JSON.parse(event.target.result);
+            if (onImportJSONData) onImportJSONData(parsed);
+          } catch (err) {
+            alert("Invalid JSON file: " + err.message);
+          }
+        };
+        reader.readAsText(file);
+      }
+    }
+  })), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      if (window.confirm("Reset all data back to the default salaried sample dataset?")) {
+        onResetData();
+      }
+    },
+    className: "flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition flex items-center justify-center space-x-1.5"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('refresh', {
+    size: 14
+  })), /*#__PURE__*/React.createElement("span", null, "Reset Data"))), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      if (window.confirm("Are you sure you want to clear all transactions? This cannot be undone.")) {
+        onClearData();
+      }
+    },
+    className: "w-full py-2 px-3 bg-red-50 hover:bg-red-100 text-[#9B111E] rounded-xl font-bold transition text-center"
+  }, "Clear All Transactions"))));
+};
+
+// ===== FILE: src/adminView.js =====
+// Admin User Management Section
+// Accessible by admin@cashbook.com (Role: admin)
+// Manage users, create users, update status active/inactive, view per-user data
+
+window.AdminUserManagementView = function ({
+  users,
+  onAddUser,
+  onUpdateUser,
+  onDeleteUser,
+  onSwitchUser,
+  currentUser,
+  transactions,
+  currency = "₹"
+}) {
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [roleFilter, setRoleFilter] = useState("ALL");
+  const [statusFilter, setStatusFilter] = useState("ALL");
+
+  // Summary counts
+  const userStats = useMemo(() => {
+    let active = 0;
+    let inactive = 0;
+    let admins = 0;
+    users.forEach(u => {
+      if (u.status === 'active') active++;else inactive++;
+      if (u.role === 'admin') admins++;
+    });
+    return {
+      total: users.length,
+      active,
+      inactive,
+      admins
+    };
+  }, [users]);
+
+  // Compute transaction counts per user
+  const userTxCounts = useMemo(() => {
+    const counts = {};
+    transactions.forEach(tx => {
+      counts[tx.userId] = (counts[tx.userId] || 0) + 1;
+    });
+    return counts;
+  }, [transactions]);
+
+  // Filtered list
+  const filteredUsers = useMemo(() => {
+    return users.filter(u => {
+      if (roleFilter !== "ALL" && u.role !== roleFilter) return false;
+      if (statusFilter !== "ALL" && u.status !== statusFilter) return false;
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        return u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.company && u.company.toLowerCase().includes(q);
+      }
+      return true;
+    });
+  }, [users, roleFilter, statusFilter, searchQuery]);
+
+  // Toggle user status
+  const handleToggleStatus = user => {
+    if (user.email === "admin@cashbook.com") {
+      alert("The primary admin account cannot be deactivated.");
+      return;
+    }
+    const newStatus = user.status === 'active' ? 'inactive' : 'active';
+    onUpdateUser({
+      ...user,
+      status: newStatus
+    });
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col h-full bg-[#F8F9FA] overflow-y-auto"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-gradient-to-r from-slate-900 to-slate-800 text-white p-4 sm:p-6 shadow-md"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "w-2.5 h-2.5 rounded-full bg-emerald-400"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs uppercase font-extrabold tracking-widest text-emerald-400"
+  }, "Admin Console")), /*#__PURE__*/React.createElement("h2", {
+    className: "text-xl sm:text-2xl font-extrabold tracking-tight mt-0.5"
+  }, "User Management & Access Control"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-300"
+  }, "Manage salaried users, create accounts, and control active/inactive status")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setShowCreateModal(true),
+    className: "px-4 py-2.5 bg-[#9B111E] hover:bg-[#850d18] active:scale-95 text-white rounded-xl text-xs font-bold shadow-md transition flex items-center space-x-2"
+  }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent('plus', {
+    size: 16
+  })), /*#__PURE__*/React.createElement("span", null, "Create New User"))), /*#__PURE__*/React.createElement("div", {
+    className: "max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-slate-700/80 text-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white/10 rounded-xl p-2.5"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-slate-300 uppercase font-semibold"
+  }, "Total Users"), /*#__PURE__*/React.createElement("p", {
+    className: "text-lg font-extrabold text-white mt-0.5"
+  }, userStats.total)), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white/10 rounded-xl p-2.5"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-emerald-300 uppercase font-semibold"
+  }, "Active Users"), /*#__PURE__*/React.createElement("p", {
+    className: "text-lg font-extrabold text-emerald-400 mt-0.5"
+  }, userStats.active)), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white/10 rounded-xl p-2.5"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-red-300 uppercase font-semibold"
+  }, "Inactive Users"), /*#__PURE__*/React.createElement("p", {
+    className: "text-lg font-extrabold text-red-400 mt-0.5"
+  }, userStats.inactive)), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white/10 rounded-xl p-2.5"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-purple-300 uppercase font-semibold"
+  }, "Admin Roles"), /*#__PURE__*/React.createElement("p", {
+    className: "text-lg font-extrabold text-purple-300 mt-0.5"
+  }, userStats.admins)))), /*#__PURE__*/React.createElement("div", {
+    className: "p-4 sm:p-6 lg:p-8 space-y-4 max-w-7xl mx-auto w-full flex-1"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "relative w-full sm:w-72"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+  }, window.getIconComponent('search', {
+    size: 16
+  })), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: searchQuery,
+    onChange: e => setSearchQuery(e.target.value),
+    placeholder: "Search user by name, email, company...",
+    className: "w-full pl-9 pr-3 py-2 bg-slate-50 rounded-xl text-xs font-medium border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-[#9B111E]"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-2 w-full sm:w-auto justify-end"
+  }, /*#__PURE__*/React.createElement("select", {
+    value: statusFilter,
+    onChange: e => setStatusFilter(e.target.value),
+    className: "px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-hidden"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "ALL"
+  }, "All Status"), /*#__PURE__*/React.createElement("option", {
+    value: "active"
+  }, "Active Only"), /*#__PURE__*/React.createElement("option", {
+    value: "inactive"
+  }, "Inactive Only")), /*#__PURE__*/React.createElement("select", {
+    value: roleFilter,
+    onChange: e => setRoleFilter(e.target.value),
+    className: "px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-hidden"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "ALL"
+  }, "All Roles"), /*#__PURE__*/React.createElement("option", {
+    value: "user"
+  }, "Standard Users"), /*#__PURE__*/React.createElement("option", {
+    value: "admin"
+  }, "Admins")))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "overflow-x-auto"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "w-full text-left text-xs"
+  }, /*#__PURE__*/React.createElement("thead", {
+    className: "bg-[#EDF2F7] text-slate-700 font-extrabold uppercase tracking-wider border-b border-slate-200"
+  }, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
+    className: "p-3.5"
+  }, "User"), /*#__PURE__*/React.createElement("th", {
+    className: "p-3.5"
+  }, "Email / Login"), /*#__PURE__*/React.createElement("th", {
+    className: "p-3.5"
+  }, "Role"), /*#__PURE__*/React.createElement("th", {
+    className: "p-3.5 text-right"
+  }, "Monthly Salary"), /*#__PURE__*/React.createElement("th", {
+    className: "p-3.5 text-center"
+  }, "Status Control"), /*#__PURE__*/React.createElement("th", {
+    className: "p-3.5 text-center"
+  }, "Transactions"), /*#__PURE__*/React.createElement("th", {
+    className: "p-3.5 text-right"
+  }, "Actions"))), /*#__PURE__*/React.createElement("tbody", {
+    className: "divide-y divide-slate-100 font-medium"
+  }, filteredUsers.length === 0 ? /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    colSpan: "7",
+    className: "p-8 text-center text-slate-400"
+  }, "No users match your filter criteria.")) : filteredUsers.map(user => {
+    const isActive = user.status === 'active';
+    const txCount = userTxCounts[user.id] || 0;
+    const isCurrent = currentUser.id === user.id;
+    return /*#__PURE__*/React.createElement("tr", {
+      key: user.id,
+      className: "hover:bg-slate-50 transition"
+    }, /*#__PURE__*/React.createElement("td", {
+      className: "p-3.5 whitespace-nowrap"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center space-x-2.5"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "w-9 h-9 rounded-full bg-[#9B111E] text-white flex items-center justify-center font-extrabold text-xs shadow-2xs"
+    }, user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center space-x-1.5"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "font-bold text-slate-900"
+    }, user.name), isCurrent && /*#__PURE__*/React.createElement("span", {
+      className: "text-[9px] bg-slate-900 text-white px-1.5 py-0.5 rounded-sm font-bold"
+    }, "YOU")), /*#__PURE__*/React.createElement("span", {
+      className: "text-[10px] text-slate-400"
+    }, user.roleTitle || user.company || 'Salaried User')))), /*#__PURE__*/React.createElement("td", {
+      className: "p-3.5 text-slate-600 font-mono text-[11px] whitespace-nowrap"
+    }, user.email), /*#__PURE__*/React.createElement("td", {
+      className: "p-3.5 whitespace-nowrap"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: `px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}`
+    }, user.role)), /*#__PURE__*/React.createElement("td", {
+      className: "p-3.5 text-right font-extrabold text-slate-800 whitespace-nowrap"
+    }, /*#__PURE__*/React.createElement(window.SalaryPrivacyViewer, {
+      amount: user.monthlySalary,
+      currency: currency,
+      currentUser: currentUser,
+      inline: true,
+      size: "small"
+    })), /*#__PURE__*/React.createElement("td", {
+      className: "p-3.5 text-center whitespace-nowrap"
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: () => handleToggleStatus(user),
+      className: `px-3 py-1 rounded-full text-[11px] font-bold transition inline-flex items-center space-x-1 shadow-2xs ${isActive ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-red-100 text-red-800 hover:bg-red-200'}`,
+      title: "Click to toggle Active / Inactive"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: `w-2 h-2 rounded-full ${isActive ? 'bg-emerald-600' : 'bg-red-600'}`
+    }), /*#__PURE__*/React.createElement("span", null, isActive ? 'Active' : 'Inactive'))), /*#__PURE__*/React.createElement("td", {
+      className: "p-3.5 text-center whitespace-nowrap text-slate-600 font-bold"
+    }, txCount), /*#__PURE__*/React.createElement("td", {
+      className: "p-3.5 text-right whitespace-nowrap"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center justify-end space-x-1"
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: () => onSwitchUser(user),
+      disabled: !isActive,
+      className: `p-1.5 rounded-lg text-slate-500 hover:text-emerald-700 hover:bg-emerald-50 transition ${!isActive ? 'opacity-40 cursor-not-allowed' : ''}`,
+      title: isActive ? `Login as ${user.name}` : 'User is inactive'
+    }, window.getIconComponent('user-check', {
+      size: 16
+    })), /*#__PURE__*/React.createElement("button", {
+      onClick: () => setEditingUser(user),
+      className: "p-1.5 rounded-lg text-slate-500 hover:text-blue-700 hover:bg-blue-50 transition",
+      title: "Edit user details"
+    }, window.getIconComponent('edit', {
+      size: 16
+    })), user.email !== "admin@cashbook.com" && /*#__PURE__*/React.createElement("button", {
+      onClick: () => {
+        if (window.confirm(`Delete user "${user.name}" (${user.email})?`)) {
+          onDeleteUser(user.id);
+        }
+      },
+      className: "p-1.5 rounded-lg text-slate-400 hover:text-red-700 hover:bg-red-50 transition",
+      title: "Delete user"
+    }, window.getIconComponent('trash', {
+      size: 16
+    })))));
+  })))))), showCreateModal && /*#__PURE__*/React.createElement(window.UserFormModal, {
+    onSave: newUser => {
+      onAddUser(newUser);
+      setShowCreateModal(false);
+    },
+    onClose: () => setShowCreateModal(false)
+  }), editingUser && /*#__PURE__*/React.createElement(window.UserFormModal, {
+    initialData: editingUser,
+    onSave: updatedUser => {
+      onUpdateUser(updatedUser);
+      setEditingUser(null);
+    },
+    onClose: () => setEditingUser(null)
+  }));
+};
+
+// User Create / Edit Form Modal
+window.UserFormModal = function ({
+  initialData,
+  onSave,
+  onClose
+}) {
+  const isEditing = !!initialData;
+  const [name, setName] = useState(initialData ? initialData.name : "");
+  const [email, setEmail] = useState(initialData ? initialData.email : "");
+  const [password, setPassword] = useState(initialData ? initialData.password : "Passwd@123");
+  const [role, setRole] = useState(initialData ? initialData.role : "user");
+  const [status, setStatus] = useState(initialData ? initialData.status : "active");
+  const [monthlySalary, setMonthlySalary] = useState(initialData ? initialData.monthlySalary : 75000);
+  const [roleTitle, setRoleTitle] = useState(initialData ? initialData.roleTitle || "" : "");
+  const [company, setCompany] = useState(initialData ? initialData.company || "" : "");
+  const [savingsGoal, setSavingsGoal] = useState(initialData ? initialData.savingsGoalPercentage || 30 : 30);
+  const handleSubmit = e => {
+    e.preventDefault();
+    if (!name.trim() || !email.trim()) return;
+    const userPayload = {
+      id: initialData ? initialData.id : "usr-" + Date.now(),
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      password: password || "Passwd@123",
+      role,
+      status,
+      monthlySalary: Number(monthlySalary) || 0,
+      roleTitle: roleTitle.trim() || "Salaried Professional",
+      company: company.trim() || "Private Ltd",
+      currency: "₹",
+      currencyCode: "INR",
+      payDay: initialData ? initialData.payDay : 1,
+      savingsGoalPercentage: Number(savingsGoal) || 30
+    };
+    onSave(userPayload);
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl my-6 animate-scale-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between pb-3 border-b border-slate-100"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "font-extrabold text-slate-900 text-base"
+  }, isEditing ? `Edit User: ${initialData.name}` : 'Create New User Account'), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-400"
+  }, "Set up credentials, role, and salary parameters")), /*#__PURE__*/React.createElement("button", {
+    onClick: onClose,
+    className: "p-1 text-slate-400 hover:text-slate-600 rounded-full"
+  }, window.getIconComponent('x', {
+    size: 18
+  }))), /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleSubmit,
+    className: "my-4 space-y-3.5 text-xs"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block mb-1"
+  }, "Full Name *"), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: name,
+    onChange: e => setName(e.target.value),
+    placeholder: "e.g. Ankit Mehta",
+    className: "w-full p-2.5 border border-slate-200 rounded-lg font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#9B111E]",
+    required: true
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-2.5"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block mb-1"
+  }, "Email / Login ID *"), /*#__PURE__*/React.createElement("input", {
+    type: "email",
+    value: email,
+    onChange: e => setEmail(e.target.value),
+    placeholder: "ankit@cashbook.com",
+    className: "w-full p-2.5 border border-slate-200 rounded-lg font-semibold focus:outline-hidden",
+    required: true
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block mb-1"
+  }, "Password *"), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: password,
+    onChange: e => setPassword(e.target.value),
+    placeholder: "Passwd@123",
+    className: "w-full p-2.5 border border-slate-200 rounded-lg font-mono focus:outline-hidden",
+    required: true
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-2.5"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block mb-1"
+  }, "Role"), /*#__PURE__*/React.createElement("select", {
+    value: role,
+    onChange: e => setRole(e.target.value),
+    className: "w-full p-2.5 border border-slate-200 rounded-lg font-bold bg-white focus:outline-hidden"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "user"
+  }, "Standard User"), /*#__PURE__*/React.createElement("option", {
+    value: "admin"
+  }, "Administrator"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block mb-1"
+  }, "Status (Active / Inactive)"), /*#__PURE__*/React.createElement("select", {
+    value: status,
+    onChange: e => setStatus(e.target.value),
+    className: "w-full p-2.5 border border-slate-200 rounded-lg font-bold bg-white focus:outline-hidden"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "active"
+  }, "Active (Can Login)"), /*#__PURE__*/React.createElement("option", {
+    value: "inactive"
+  }, "Inactive (Deactivated)")))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-2.5"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block mb-1"
+  }, "Monthly Net Salary (\u20B9)"), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    value: monthlySalary,
+    onChange: e => setMonthlySalary(e.target.value),
+    className: "w-full p-2.5 border border-slate-200 rounded-lg font-bold focus:outline-hidden"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block mb-1"
+  }, "Savings Goal (%)"), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    min: "5",
+    max: "80",
+    value: savingsGoal,
+    onChange: e => setSavingsGoal(e.target.value),
+    className: "w-full p-2.5 border border-slate-200 rounded-lg font-bold focus:outline-hidden"
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-2.5"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block mb-1"
+  }, "Designation / Role Title"), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: roleTitle,
+    onChange: e => setRoleTitle(e.target.value),
+    placeholder: "e.g. Financial Analyst",
+    className: "w-full p-2.5 border border-slate-200 rounded-lg font-medium focus:outline-hidden"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block mb-1"
+  }, "Company / Employer"), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: company,
+    onChange: e => setCompany(e.target.value),
+    placeholder: "e.g. HDFC Bank Ltd",
+    className: "w-full p-2.5 border border-slate-200 rounded-lg font-medium focus:outline-hidden"
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "flex space-x-2 pt-3 border-t border-slate-100"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: onClose,
+    className: "flex-1 py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold"
+  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    className: "flex-1 py-2.5 px-3 bg-[#9B111E] hover:bg-[#850d18] text-white rounded-xl font-bold shadow-xs"
+  }, isEditing ? 'Save Changes' : 'Create User')))));
+};
+
+// ===== FILE: src/app.js =====
+// Main Application Root Component
+// Multi-User Personal Finance Management with Role-Based Access Control
+// Full CRUD for Transactions & Users with Local JSON State Management
+
+const STORAGE_KEYS = {
+  USERS: 'pf_users_v2',
+  CURRENT_USER: 'pf_current_user_v2',
+  TRANSACTIONS: 'pf_transactions_v2',
+  INCOME_CATS: 'pf_income_categories_v2',
+  EXPENSE_CATS: 'pf_expense_categories_v2',
+  BALANCE_SHEETS: 'pf_balance_sheets_v2',
+  IS_LOGGED_IN: 'pf_is_logged_in_v2'
+};
+window.App = function () {
+  // 1. Users state
+  const [users, setUsers] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.USERS);
+      let list = saved ? JSON.parse(saved) : window.INITIAL_DATA.users;
+      // Sync priya@cashbook.com -> akash@cashbook.com and name with Kiran
+      list = list.map(u => {
+        if (u.email === 'priya@cashbook.com' || u.email === 'akash@cashbook.com') {
+          return {
+            ...u,
+            email: 'akash@cashbook.com',
+            name: 'Kiran'
+          };
+        }
+        return u;
+      });
+      return list;
+    } catch (e) {
+      return window.INITIAL_DATA.users;
+    }
+  });
+
+  // 2. Logged in session state
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.IS_LOGGED_IN);
+      return saved === null ? true : saved === 'true';
+    } catch (e) {
+      return true;
+    }
+  });
+
+  // 2. Current active logged-in user
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.email === 'priya@cashbook.com' || parsed.email === 'akash@cashbook.com') {
+          parsed.email = 'akash@cashbook.com';
+          parsed.name = 'Kiran';
+        }
+        // Ensure user exists in users list and is active
+        const found = window.INITIAL_DATA.users.find(u => u.id === parsed.id || u.email === parsed.email);
+        if (found) return {
+          ...found,
+          ...parsed,
+          email: 'akash@cashbook.com',
+          name: 'Kiran'
+        };
+      }
+      return window.INITIAL_DATA.users[1]; // default to Rahul Sharma (user)
+    } catch (e) {
+      return window.INITIAL_DATA.users[1];
+    }
+  });
+
+  // 3. Transactions dataset
+  const [transactions, setTransactions] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.TRANSACTIONS);
+      return saved ? JSON.parse(saved) : window.INITIAL_DATA.transactions;
+    } catch (e) {
+      return window.INITIAL_DATA.transactions;
+    }
+  });
+
+  // 4. Categories
+  const [incomeCategories, setIncomeCategories] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.INCOME_CATS);
+      return saved ? JSON.parse(saved) : window.INITIAL_DATA.incomeCategories;
+    } catch (e) {
+      return window.INITIAL_DATA.incomeCategories;
+    }
+  });
+  const [expenseCategories, setExpenseCategories] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.EXPENSE_CATS);
+      return saved ? JSON.parse(saved) : window.INITIAL_DATA.expenseCategories;
+    } catch (e) {
+      return window.INITIAL_DATA.expenseCategories;
+    }
+  });
+
+  // 5. Balance sheets (keyed by userId)
+  const [balanceSheets, setBalanceSheets] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.BALANCE_SHEETS);
+      return saved ? JSON.parse(saved) : window.INITIAL_DATA.balanceSheets;
+    } catch (e) {
+      return window.INITIAL_DATA.balanceSheets;
+    }
+  });
+
+  // Navigation & View States
+  const [activeTab, setActiveTab] = useState('cashbook'); // 'dashboard' | 'cashbook' | 'reports' | 'categories' | 'profile' | 'adminUsers'
+  const [cashBookSubView, setCashBookSubView] = useState('entry'); // 'overview' | 'entry'
+  const [entryMode, setEntryMode] = useState('OUT'); // 'OUT' or 'IN'
+  const [editingTransaction, setEditingTransaction] = useState(null); // transaction being edited
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [globalToast, setGlobalToast] = useState(null);
+
+  // Screen Width state to adapt layouts responsively
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  const isDesktop = windowWidth >= 1024;
+  const isTablet = windowWidth >= 768 && windowWidth < 1024;
+  const isMobile = windowWidth < 768;
+
+  // Persist State to LocalStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+    } catch (e) {}
+  }, [users]);
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+    } catch (e) {}
+  }, [currentUser]);
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(transactions));
+    } catch (e) {}
+  }, [transactions]);
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.INCOME_CATS, JSON.stringify(incomeCategories));
+    } catch (e) {}
+  }, [incomeCategories]);
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.EXPENSE_CATS, JSON.stringify(expenseCategories));
+    } catch (e) {}
+  }, [expenseCategories]);
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.BALANCE_SHEETS, JSON.stringify(balanceSheets));
+    } catch (e) {}
+  }, [balanceSheets]);
+  const showGlobalToast = msg => {
+    setGlobalToast(msg);
+    setTimeout(() => setGlobalToast(null), 3000);
+  };
+
+  // --------------------------------------------------------------------------
+  // USER-SPECIFIC DATA FILTERING ("data show as per user profile")
+  // --------------------------------------------------------------------------
+  // If current user is standard user: only view their own transactions.
+  // If current user is admin: can view their own data, or all data.
+  const userTransactions = useMemo(() => {
+    if (currentUser.role === 'admin') {
+      // For Admin, show all transactions or their own depending on context
+      return transactions;
+    }
+    return transactions.filter(tx => tx.userId === currentUser.id);
+  }, [transactions, currentUser]);
+
+  // Active user's balance sheet
+  const userBalanceSheet = useMemo(() => {
+    return balanceSheets[currentUser.id] || window.INITIAL_DATA.balanceSheets["usr-rahul"];
+  }, [balanceSheets, currentUser]);
+
+  // Update active user balance sheet
+  const handleUpdateBalanceSheet = updatedSheet => {
+    setBalanceSheets({
+      ...balanceSheets,
+      [currentUser.id]: updatedSheet
+    });
+    showGlobalToast("Financial position updated!");
+  };
+
+  // --------------------------------------------------------------------------
+  // TRANSACTION CRUD HANDLERS (Create, Read, Update, Delete)
+  // --------------------------------------------------------------------------
+  // Save or Update transaction
+  const handleSaveTransaction = (txPayload, isEditing) => {
+    if (isEditing) {
+      // Update existing
+      setTransactions(transactions.map(t => t.id === txPayload.id ? {
+        ...txPayload,
+        userId: txPayload.userId || currentUser.id
+      } : t));
+      showGlobalToast(`✓ Transaction updated (${currentUser.currency}${txPayload.amount})`);
+    } else {
+      // Create new transaction tagged with currentUser.id
+      const newTx = {
+        ...txPayload,
+        userId: currentUser.id
+      };
+      setTransactions([newTx, ...transactions]);
+      showGlobalToast(`✓ ${newTx.type === 'IN' ? 'Income' : 'Expense'} of ${currentUser.currency}${newTx.amount} recorded!`);
+    }
+    setEditingTransaction(null);
+    setCashBookSubView('overview');
+  };
+
+  // Trigger edit on an existing transaction
+  const handleEditTransaction = tx => {
+    setEditingTransaction(tx);
+    setEntryMode(tx.type);
+    setCashBookSubView('entry');
+    setActiveTab('cashbook');
+  };
+
+  // Delete transaction
+  const handleDeleteTransaction = id => {
+    setTransactions(transactions.filter(t => t.id !== id));
+    showGlobalToast("Transaction deleted");
+  };
+
+  // Open entry form for new transaction
+  const handleOpenCashBookEntry = mode => {
+    setEditingTransaction(null);
+    setEntryMode(mode);
+    setCashBookSubView('entry');
+    setActiveTab('cashbook');
+  };
+
+  // --------------------------------------------------------------------------
+  // CATEGORY MANAGEMENT HANDLERS (Add, Edit, Delete for Income & Expense)
+  // --------------------------------------------------------------------------
+  const handleAddCategory = (newCat, modeOrType) => {
+    const isIncome = modeOrType === 'IN' || modeOrType === 'income';
+    if (isIncome) {
+      setIncomeCategories(prev => [...prev, newCat]);
+    } else {
+      setExpenseCategories(prev => [...prev, newCat]);
+    }
+    showGlobalToast(`Category "${newCat.name}" created!`);
+  };
+  const handleEditCategory = (updatedCat, modeOrType) => {
+    const isIncome = modeOrType === 'IN' || modeOrType === 'income';
+    if (isIncome) {
+      setIncomeCategories(prev => prev.map(c => c.id === updatedCat.id ? updatedCat : c));
+    } else {
+      setExpenseCategories(prev => prev.map(c => c.id === updatedCat.id ? updatedCat : c));
+    }
+    showGlobalToast(`Category "${updatedCat.name}" updated!`);
+  };
+  const handleDeleteCategory = (catId, modeOrType) => {
+    const isIncome = modeOrType === 'IN' || modeOrType === 'income';
+    if (isIncome) {
+      setIncomeCategories(prev => prev.filter(c => c.id !== catId));
+    } else {
+      setExpenseCategories(prev => prev.filter(c => c.id !== catId));
+    }
+    showGlobalToast("Category deleted");
+  };
+
+  // --------------------------------------------------------------------------
+  // USER PROFILE & ADMIN USER MANAGEMENT HANDLERS
+  // --------------------------------------------------------------------------
+  // Add new user (Admin capability)
+  const handleAddUser = newUser => {
+    setUsers([...users, newUser]);
+    // Initialize default starter balance sheet
+    setBalanceSheets({
+      ...balanceSheets,
+      [newUser.id]: {
+        assets: {
+          cashInHand: 5000,
+          bankBalance: Math.round(newUser.monthlySalary * 0.8),
+          savings: 50000,
+          investments: 100000,
+          otherAssets: 50000
+        },
+        liabilities: {
+          homeLoan: 0,
+          personalLoan: 0,
+          creditCard: 5000,
+          otherLiabilities: 0
+        },
+        lastUpdated: new Date().toISOString().slice(0, 10)
+      }
+    });
+    showGlobalToast(`User "${newUser.name}" (${newUser.role}) created successfully!`);
+  };
+
+  // Update user profile or status
+  const handleUpdateUser = updatedUser => {
+    setUsers(users.map(u => u.id === updatedUser.id ? updatedUser : u));
+    // If the updated user is currently logged in, update currentUser in real time
+    if (currentUser.id === updatedUser.id) {
+      setCurrentUser(updatedUser);
+    }
+    showGlobalToast(`User "${updatedUser.name}" updated!`);
+  };
+
+  // Delete user
+  const handleDeleteUser = userId => {
+    if (userId === "usr-admin") {
+      alert("The primary administrator account cannot be deleted.");
+      return;
+    }
+    setUsers(users.filter(u => u.id !== userId));
+    // Remove their transactions
+    setTransactions(transactions.filter(t => t.userId !== userId));
+    // If deleted user was active, switch to admin
+    if (currentUser.id === userId) {
+      setCurrentUser(users.find(u => u.id === "usr-admin") || users[0]);
+    }
+    showGlobalToast("User and associated transactions removed.");
+  };
+
+  // Switch active user
+  const handleSwitchUser = user => {
+    if (user.status === 'inactive') {
+      alert(`Access Denied: The account for ${user.name} (${user.email}) is currently INACTIVE. Please contact admin@cashbook.com to reactivate.`);
+      return;
+    }
+    setCurrentUser(user);
+    setIsLoggedIn(true);
+    try {
+      localStorage.setItem(STORAGE_KEYS.IS_LOGGED_IN, 'true');
+    } catch (e) {}
+    setEditingTransaction(null);
+    setCashBookSubView('overview');
+    setShowLoginModal(false);
+    showGlobalToast(`Switched account to: ${user.name} (${user.role.toUpperCase()})`);
+  };
+
+  // Logout session handler
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    try {
+      localStorage.setItem(STORAGE_KEYS.IS_LOGGED_IN, 'false');
+    } catch (e) {}
+    showGlobalToast("You have been signed out.");
+  };
+
+  // JSON Import Full Dataset
+  const handleImportJSONData = jsonData => {
+    try {
+      if (jsonData.users && Array.isArray(jsonData.users)) setUsers(jsonData.users);
+      if (jsonData.transactions && Array.isArray(jsonData.transactions)) setTransactions(jsonData.transactions);
+      if (jsonData.incomeCategories && Array.isArray(jsonData.incomeCategories)) setIncomeCategories(jsonData.incomeCategories);
+      if (jsonData.expenseCategories && Array.isArray(jsonData.expenseCategories)) setExpenseCategories(jsonData.expenseCategories);
+      if (jsonData.balanceSheets) setBalanceSheets(jsonData.balanceSheets);
+      if (jsonData.userProfile) setCurrentUser({
+        ...currentUser,
+        ...jsonData.userProfile
+      });
+      showGlobalToast("✓ JSON data imported successfully!");
+    } catch (e) {
+      alert("Error importing JSON: " + e.message);
+    }
+  };
+
+  // Reset to initial demo dataset
+  const handleResetData = () => {
+    setUsers(window.INITIAL_DATA.users);
+    setCurrentUser(window.INITIAL_DATA.users[1]); // Rahul Sharma
+    setTransactions(window.INITIAL_DATA.transactions);
+    setIncomeCategories(window.INITIAL_DATA.incomeCategories);
+    setExpenseCategories(window.INITIAL_DATA.expenseCategories);
+    setBalanceSheets(window.INITIAL_DATA.balanceSheets);
+    localStorage.clear();
+    showGlobalToast("Reset to default initial salaried dataset");
+  };
+
+  // Clear all transactions
+  const handleClearData = () => {
+    setTransactions([]);
+    showGlobalToast("All transactions cleared");
+  };
+
+  // Build Navigation Items (Dynamically shows "Users" tab for admin role)
+  const navItems = [{
+    id: 'dashboard',
+    label: 'Dashboard',
+    icon: 'dashboard'
+  }, {
+    id: 'cashbook',
+    label: 'Cash Book',
+    icon: 'cashbook'
+  }, {
+    id: 'reports',
+    label: 'Reports',
+    icon: 'reports'
+  }, {
+    id: 'categories',
+    label: 'Categories',
+    icon: 'categories'
+  }, {
+    id: 'profile',
+    label: 'Profile',
+    icon: 'profile'
+  }];
+  if (currentUser.role === 'admin') {
+    navItems.push({
+      id: 'adminUsers',
+      label: 'Users',
+      icon: 'users'
+    });
+  }
+
+  // Current month balance for header
+  const currentMonthBalance = useMemo(() => {
+    let inc = 0;
+    let exp = 0;
+    userTransactions.filter(t => t.date.startsWith('2026-11')).forEach(t => {
+      if (t.type === 'IN') inc += Number(t.amount);
+      if (t.type === 'OUT') exp += Number(t.amount);
+    });
+    return inc - exp;
+  }, [userTransactions]);
+
+  // If user is not logged in, show the dedicated Full-Screen Login Page
+  if (!isLoggedIn) {
+    return /*#__PURE__*/React.createElement(window.LoginPage, {
+      users: users,
+      onLoginSuccess: user => {
+        setCurrentUser(user);
+        setIsLoggedIn(true);
+        try {
+          localStorage.setItem(STORAGE_KEYS.IS_LOGGED_IN, 'true');
+        } catch (e) {}
+        showGlobalToast(`Welcome back, ${user.name}!`);
+      }
+    });
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    className: "min-h-screen w-full bg-[#F8FAFC] flex flex-col text-slate-800 font-sans antialiased selection:bg-[#9B111E] selection:text-white"
+  }, globalToast && /*#__PURE__*/React.createElement("div", {
+    className: "fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-slate-900/90 text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-xl backdrop-blur animate-fade-in flex items-center space-x-2 border border-slate-700"
+  }, /*#__PURE__*/React.createElement("span", null, globalToast)), /*#__PURE__*/React.createElement("header", {
+    className: "sticky top-0 z-40 bg-white border-b border-slate-200/90 px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3 shadow-xs w-full"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-full flex items-center justify-between"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    onClick: () => {
+      setActiveTab('dashboard');
+    },
+    className: "w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#9B111E] text-white flex items-center justify-center font-extrabold text-sm sm:text-base shadow-xs cursor-pointer hover:bg-[#850d18] transition",
+    title: "Go to Dashboard"
+  }, "\u20B9"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setShowLoginModal(true),
+    className: "text-left group focus:outline-hidden",
+    title: "Click to Switch User / Login"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-1.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-extrabold text-slate-900 text-sm sm:text-base tracking-tight group-hover:text-[#9B111E] transition"
+  }, currentUser.name), /*#__PURE__*/React.createElement("span", {
+    className: `text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full ${currentUser.role === 'admin' ? 'bg-purple-100 text-purple-800 border border-purple-200' : 'bg-red-50 text-[#9B111E] border border-red-200'}`
+  }, currentUser.role), /*#__PURE__*/React.createElement("span", {
+    className: "text-slate-400 text-xs group-hover:text-slate-600"
+  }, "\u25BC")), /*#__PURE__*/React.createElement("div", {
+    className: "text-[11px] text-slate-400 hidden sm:flex items-center space-x-1.5 mt-0.5"
+  }, /*#__PURE__*/React.createElement("span", null, currentUser.company, " \u2022"), /*#__PURE__*/React.createElement(window.SalaryPrivacyViewer, {
+    amount: currentUser.monthlySalary,
+    currency: currentUser.currency,
+    currentUser: currentUser,
+    inline: true,
+    size: "small"
+  })))), /*#__PURE__*/React.createElement("nav", {
+    className: "hidden md:flex items-center space-x-1 bg-slate-100 p-1 rounded-xl"
+  }, navItems.map(item => {
+    const isActive = activeTab === item.id;
+    return /*#__PURE__*/React.createElement("button", {
+      key: item.id,
+      onClick: () => {
+        setActiveTab(item.id);
+        if (item.id === 'cashbook') setCashBookSubView('overview');
+      },
+      className: `px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 ${isActive ? 'bg-[#9B111E] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'}`
+    }, /*#__PURE__*/React.createElement("span", null, window.getIconComponent(item.icon, {
+      size: 15
+    })), /*#__PURE__*/React.createElement("span", null, item.label));
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center space-x-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "hidden sm:flex flex-col text-right mr-1"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] text-slate-400 font-semibold uppercase"
+  }, "Nov Net Balance"), /*#__PURE__*/React.createElement("span", {
+    className: `text-xs font-extrabold ${currentMonthBalance >= 0 ? 'text-emerald-700' : 'text-[#9B111E]'}`
+  }, window.formatCurrency(currentMonthBalance, currentUser.currency))), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleOpenCashBookEntry('IN'),
+    className: "px-2.5 sm:px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white rounded-lg font-bold text-xs shadow-xs transition flex items-center space-x-1",
+    title: "Record Money Received"
+  }, /*#__PURE__*/React.createElement("span", null, "+ IN")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => handleOpenCashBookEntry('OUT'),
+    className: "px-2.5 sm:px-3 py-1.5 bg-[#9B111E] hover:bg-[#850d18] active:scale-95 text-white rounded-lg font-bold text-xs shadow-xs transition flex items-center space-x-1",
+    title: "Record Money Spent"
+  }, /*#__PURE__*/React.createElement("span", null, "- OUT")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setShowLoginModal(true),
+    className: "p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition",
+    title: "Switch User / Quick Login"
+  }, window.getIconComponent('user-check', {
+    size: 18
+  })), /*#__PURE__*/React.createElement("button", {
+    onClick: handleLogout,
+    className: "p-1.5 px-2 bg-slate-100 hover:bg-red-50 hover:text-[#9B111E] text-slate-600 rounded-lg text-xs font-bold transition flex items-center space-x-1",
+    title: "Log Out of Account"
+  }, window.getIconComponent('log-out', {
+    size: 16
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "hidden lg:inline text-[11px]"
+  }, "Logout"))))), /*#__PURE__*/React.createElement("main", {
+    className: "flex-1 w-full flex flex-col min-h-0"
+  }, activeTab === 'dashboard' && /*#__PURE__*/React.createElement(window.DashboardView, {
+    transactions: userTransactions,
+    userProfile: currentUser,
+    onNavigateToCashBook: mode => {
+      if (mode === 'OVERVIEW') {
+        setActiveTab('cashbook');
+        setCashBookSubView('overview');
+      } else {
+        handleOpenCashBookEntry(mode);
+      }
+    },
+    currency: currentUser.currency
+  }), activeTab === 'cashbook' && /*#__PURE__*/React.createElement(React.Fragment, null, cashBookSubView === 'entry' ? /*#__PURE__*/React.createElement(window.CashBookEntry, {
+    mode: entryMode,
+    onBack: () => {
+      setEditingTransaction(null);
+      setCashBookSubView('overview');
+    },
+    onSave: handleSaveTransaction,
+    categories: entryMode === 'IN' ? incomeCategories : expenseCategories,
+    onAddCategory: handleAddCategory,
+    sampleAttachments: window.INITIAL_DATA.sampleAttachments,
+    deviceMode: isDesktop ? 'desktop' : isTablet ? 'tablet' : 'mobile',
+    initialTransaction: editingTransaction
+  }) : /*#__PURE__*/React.createElement(window.CashBookOverview, {
+    transactions: userTransactions,
+    onOpenEntry: mode => handleOpenCashBookEntry(mode),
+    onDeleteTransaction: handleDeleteTransaction,
+    onEditTransaction: handleEditTransaction,
+    currency: currentUser.currency
+  })), activeTab === 'reports' && /*#__PURE__*/React.createElement(window.ReportsView, {
+    transactions: userTransactions,
+    balanceSheet: userBalanceSheet,
+    onUpdateBalanceSheet: handleUpdateBalanceSheet,
+    userProfile: currentUser,
+    currency: currentUser.currency
+  }), activeTab === 'categories' && /*#__PURE__*/React.createElement(window.CategoriesView, {
+    incomeCategories: incomeCategories,
+    expenseCategories: expenseCategories,
+    transactions: userTransactions,
+    onAddCategory: handleAddCategory,
+    onEditCategory: handleEditCategory,
+    onDeleteCategory: handleDeleteCategory,
+    currency: currentUser.currency
+  }), activeTab === 'profile' && /*#__PURE__*/React.createElement(window.ProfileSettingsView, {
+    userProfile: currentUser,
+    onUpdateProfile: updated => handleUpdateUser({
+      ...currentUser,
+      ...updated
+    }),
+    onResetData: handleResetData,
+    onClearData: handleClearData,
+    transactions: transactions,
+    categories: {
+      income: incomeCategories,
+      expense: expenseCategories
+    },
+    currency: currentUser.currency,
+    onOpenLoginModal: () => setShowLoginModal(true),
+    onImportJSONData: handleImportJSONData,
+    onLogout: handleLogout
+  }), activeTab === 'adminUsers' && currentUser.role === 'admin' && /*#__PURE__*/React.createElement(window.AdminUserManagementView, {
+    users: users,
+    onAddUser: handleAddUser,
+    onUpdateUser: handleUpdateUser,
+    onDeleteUser: handleDeleteUser,
+    onSwitchUser: handleSwitchUser,
+    currentUser: currentUser,
+    transactions: transactions,
+    currency: currentUser.currency
+  })), !isDesktop && !isTablet && !(activeTab === 'cashbook' && cashBookSubView === 'entry') && /*#__PURE__*/React.createElement("nav", {
+    className: "sticky bottom-0 z-40 bg-white border-t border-slate-200/90 px-2 py-1.5 flex items-center justify-around shrink-0 select-none shadow-lg"
+  }, navItems.map(item => {
+    const isActive = activeTab === item.id;
+    return /*#__PURE__*/React.createElement("button", {
+      key: item.id,
+      onClick: () => {
+        setActiveTab(item.id);
+        if (item.id === 'cashbook') setCashBookSubView('overview');
+      },
+      className: `flex flex-col items-center justify-center py-1 px-3 rounded-xl transition ${isActive ? 'text-[#9B111E]' : 'text-slate-400 hover:text-slate-600'}`
+    }, /*#__PURE__*/React.createElement("span", {
+      className: `p-1 rounded-lg transition ${isActive ? 'bg-red-50' : ''}`
+    }, window.getIconComponent(item.icon, {
+      size: 20
+    })), /*#__PURE__*/React.createElement("span", {
+      className: `text-[10px] tracking-tight mt-0.5 ${isActive ? 'font-extrabold text-[#9B111E]' : 'font-semibold'}`
+    }, item.label));
+  })), showLoginModal && /*#__PURE__*/React.createElement(window.LoginAndUserSwitcherModal, {
+    users: users,
+    currentUser: currentUser,
+    onSelectUser: handleSwitchUser,
+    onClose: () => setShowLoginModal(false)
+  }));
+};
+
+// ============================================================================
+// LOGIN AND USER SWITCHER MODAL COMPONENT
+// ============================================================================
+window.LoginAndUserSwitcherModal = function ({
+  users,
+  currentUser,
+  onSelectUser,
+  onClose
+}) {
+  const [emailInput, setEmailInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
+  const handleLoginFormSubmit = e => {
+    e.preventDefault();
+    setErrorMessage(null);
+    const user = users.find(u => u.email.toLowerCase() === emailInput.trim().toLowerCase());
+    if (!user) {
+      setErrorMessage("No account found with this email.");
+      return;
+    }
+    if (user.password !== passwordInput) {
+      setErrorMessage("Incorrect password. Please try again.");
+      return;
+    }
+    if (user.status === 'inactive') {
+      setErrorMessage(`Account Inactive: ${user.name} has been deactivated. Please contact admin@cashbook.com.`);
+      return;
+    }
+    onSelectUser(user);
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl my-6 animate-scale-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between pb-3 border-b border-slate-100"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "font-extrabold text-slate-900 text-base"
+  }, "User Login & Account Switcher"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-slate-400"
+  }, "Login with credentials or switch between profiles")), /*#__PURE__*/React.createElement("button", {
+    onClick: onClose,
+    className: "p-1 text-slate-400 hover:text-slate-600 rounded-full"
+  }, window.getIconComponent('x', {
+    size: 18
+  }))), errorMessage && /*#__PURE__*/React.createElement("div", {
+    className: "mt-3 p-2.5 bg-red-50 border border-red-200 rounded-xl text-xs font-semibold text-[#9B111E]"
+  }, errorMessage), /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleLoginFormSubmit,
+    className: "my-4 space-y-3 text-xs"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block mb-1"
+  }, "Email Address"), /*#__PURE__*/React.createElement("input", {
+    type: "email",
+    value: emailInput,
+    onChange: e => setEmailInput(e.target.value),
+    placeholder: "e.g. admin@cashbook.com or rahul@cashbook.com",
+    className: "w-full p-2.5 border border-slate-200 rounded-lg font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#9B111E]",
+    required: true
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-slate-600 font-bold block mb-1"
+  }, "Password"), /*#__PURE__*/React.createElement("input", {
+    type: "password",
+    value: passwordInput,
+    onChange: e => setPasswordInput(e.target.value),
+    placeholder: "Enter password (e.g. Passwd@123)",
+    className: "w-full p-2.5 border border-slate-200 rounded-lg font-mono focus:outline-hidden focus:ring-2 focus:ring-[#9B111E]",
+    required: true
+  })), /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    className: "w-full py-2.5 bg-[#9B111E] hover:bg-[#850d18] text-white rounded-xl font-bold text-xs shadow-xs transition"
+  }, "Sign In with Credentials")), /*#__PURE__*/React.createElement("div", {
+    className: "pt-3 border-t border-slate-100"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2"
+  }, "Or Quick Switch Demo Profile (1-Click)"), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2 max-h-56 overflow-y-auto pr-1"
+  }, users.map(u => {
+    const isCurrent = currentUser.id === u.id;
+    const isActive = u.status === 'active';
+    return /*#__PURE__*/React.createElement("button", {
+      key: u.id,
+      onClick: () => onSelectUser(u),
+      className: `w-full flex items-center justify-between p-2.5 rounded-xl border text-left transition ${isCurrent ? 'border-[#9B111E] bg-red-50/60 ring-1 ring-[#9B111E]' : 'border-slate-200 hover:border-slate-300 bg-white'}`
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center space-x-2.5 overflow-hidden pr-2"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "w-8 h-8 rounded-full bg-[#9B111E] text-white flex items-center justify-center font-extrabold text-xs shrink-0"
+    }, u.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()), /*#__PURE__*/React.createElement("div", {
+      className: "overflow-hidden"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center space-x-1.5"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "text-xs font-bold text-slate-900 truncate"
+    }, u.name), isCurrent && /*#__PURE__*/React.createElement("span", {
+      className: "text-[9px] bg-[#9B111E] text-white px-1.5 py-0.2 rounded-sm font-bold"
+    }, "CURRENT")), /*#__PURE__*/React.createElement("span", {
+      className: "text-[10px] text-slate-400 font-mono truncate block"
+    }, u.email))), /*#__PURE__*/React.createElement("div", {
+      className: "text-right shrink-0"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: `px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase ${u.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}`
+    }, u.role), /*#__PURE__*/React.createElement("span", {
+      className: `block text-[9px] font-bold mt-0.5 ${isActive ? 'text-emerald-600' : 'text-red-600'}`
+    }, isActive ? '● Active' : '● Inactive')));
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "mt-3.5 p-2 bg-slate-50 rounded-xl text-[10px] text-slate-500 space-y-0.5"
+  }, /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("strong", null, "Admin Login:"), " admin@cashbook.com \u2022 Password: ", /*#__PURE__*/React.createElement("code", null, "Passwd@123")), /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("strong", null, "User Login:"), " rahul@cashbook.com / akash@cashbook.com \u2022 Password: ", /*#__PURE__*/React.createElement("code", null, "Passwd@123")))));
+};
+
+// Mount React App
+const rootElement = document.getElementById('root');
+if (rootElement) {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(React.createElement(window.App));
+}

@@ -1,0 +1,26 @@
+# Netlify Configuration for Personal Finance Management Tool (Cash Book)
+# Ready for instant one-click deployment on Netlify
+
+[build]
+  publish = "."
+  command = "node build.js && node generate-html.js"
+
+# Single-Page Application (SPA) redirect rule
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Security and caching headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
